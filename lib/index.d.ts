@@ -38,4 +38,4 @@ export declare function getConfigValues<ConfigOptions extends string>(defaults: 
  */
 export declare function configProxy<ConfigOptions extends string>(config: {
     [option in ConfigOptions]: GM.Value;
-}, callback?: (gmSetPromise: Promise<void>) => void): { [option in ConfigOptions]: GM.Value; };
+}, callback?: (gmSetPromise: Promise<void>) => void): typeof config;
