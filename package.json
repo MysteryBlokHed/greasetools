@@ -1,0 +1,22 @@
+{
+  "name": "gmtools",
+  "version": "0.1.0",
+  "description": "Functions and other tools for GreaseMonkey UserScript development.",
+  "author": "Adam Thompson-Sharpe",
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/MysteryBlokHed/gmtools.git"
+  },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "devDependencies": {
+    "@types/greasemonkey": "^4.0.2",
+    "prettier": "^2.4.1",
+    "typescript": "^4.4.4"
+  }
+}
