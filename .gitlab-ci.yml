@@ -1,0 +1,32 @@
+image: node:latest
+
+stages:
+  - lint
+  - build
+
+cache:
+  paths:
+    - node_modules/
+    - .yarn-cache/
+
+.base:
+  only:
+    changes:
+      - src/**/*
+      - package.json
+      - tsconfig.json
+      - .gitlab-ci.yml
+
+lint:
+  stage: lint
+  extends: .base
+  script:
+    - yarn install --cache-folder .yarn-cache
+    - yarn lint --check
+
+test_build:
+  stage: build
+  extends: .base
+  script:
+    - yarn install --cache-folder .yarn-cache
+    - yarn build

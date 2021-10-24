@@ -13,7 +13,8 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "lint": "prettier \"src/**/*\" \"*.{json,md,yml}\""
   },
   "devDependencies": {
     "@types/greasemonkey": "^4.0.2",
