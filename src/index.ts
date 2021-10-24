@@ -6,7 +6,7 @@
  * @returns A Promise that resolves to an object with all of the config options
  *
  * @example
- * ```
+ * ```typescript
  * const config = await getConfigValues({
  *     somethingEnabled: false,
  *     someNumber: 42,
@@ -18,7 +18,7 @@
  */
 export function getConfigValues<ConfigOptions extends string>(defaults: {
   [option in ConfigOptions]: GM.Value
-}) {
+}): Promise<typeof defaults> {
   return new Promise<typeof defaults>(resolve => {
     const config = defaults
 
@@ -51,4 +51,41 @@ export function getConfigValues<ConfigOptions extends string>(defaults: {
       })
     }
   })
+}
+
+/**
+ *
+ * @param config A config object, such as the one from `getConfigValues`
+ * @param callback Called with the Promise returned by `GM.setValue`
+ * @returns A Proxy to the config object passed that updates the GreaseMonkey config on set
+ * @example
+ * ```typescript
+ * const config = configProxy(
+ *   await getConfigValues({
+ *     message: 'Hello, World'!,
+ *   })
+ * )
+ *
+ * config.message = 'Hello!' // Runs GM.setValue('message', 'Hello!')
+ * ```
+ */
+export function configProxy<ConfigOptions extends string>(
+  config: {
+    [option in ConfigOptions]: GM.Value
+  },
+  callback?: (gmSetPromise: Promise<void>) => void
+) {
+  /** Handle sets to the config object */
+  const handler: ProxyHandler<typeof config> = {
+    set(target, prop: ConfigOptions, value: GM.Value) {
+      if (target.hasOwnProperty(prop)) {
+        if (callback) callback(GM.setValue(prop, value))
+        target[prop] = value
+        return true
+      }
+      return false
+    },
+  }
+
+  return new Proxy(config, handler)
 }
