@@ -21,6 +21,9 @@ export declare function getConfigValues<ConfigOptions extends string>(defaults: 
     [option in ConfigOptions]: GM.Value;
 }): Promise<typeof defaults>;
 /**
+ * Get a Proxy that automatically updates GM variables. This should generally only be used
+ * when only one instance exists or when only one instance will be modifying values,
+ * since getting a value does not update it
  *
  * @param config A config object, such as the one from `getConfigValues`
  * @param callback Called with the Promise returned by `GM.setValue`
