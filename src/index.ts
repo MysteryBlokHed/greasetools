@@ -84,7 +84,7 @@ export function configProxy<ConfigOptions extends string>(
   /** Handle sets to the config object */
   const handler: ProxyHandler<typeof config> = {
     set(target, prop: ConfigOptions, value: GM.Value) {
-      if (target.hasOwnProperty(prop)) {
+      if (prop in target) {
         const gmSetPromise = GM.setValue(prop, value)
         if (callback) callback(gmSetPromise)
         target[prop] = value
