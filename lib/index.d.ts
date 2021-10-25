@@ -18,6 +18,8 @@ export declare type ConfigObject<ConfigOptions extends string> = {
  *
  * console.log(config.somethingEnabled)
  * console.log(config.someNumber)
+ *
+ * config.someNumber++ // Does NOT modify GM stored value
  * ```
  */
 export declare function getConfigValues<ConfigOptions extends string>(defaults: ConfigObject<ConfigOptions>): Promise<typeof defaults>;
@@ -34,11 +36,12 @@ export declare function getConfigValues<ConfigOptions extends string>(defaults: 
  * ```typescript
  * const config = configProxy(
  *   await getConfigValues({
- *     message: 'Hello, World'!,
+ *     message: 'Hello, World!',
  *   })
  * )
  *
  * config.message = 'Hello!' // Runs GM.setValue('message', 'Hello!')
+ * console.log(config.message) // Logs 'Hello!'. Does NOT run GM.getValue
  * ```
  */
 export declare function configProxy<ConfigOptions extends string>(config: ConfigObject<ConfigOptions>, callback?: (gmSetPromise: Promise<void>) => void): typeof config;

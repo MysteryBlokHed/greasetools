@@ -18,6 +18,8 @@ export type ConfigObject<ConfigOptions extends string> = {
  *
  * console.log(config.somethingEnabled)
  * console.log(config.someNumber)
+ *
+ * config.someNumber++ // Does NOT modify GM stored value
  * ```
  */
 export function getConfigValues<ConfigOptions extends string>(
@@ -70,11 +72,12 @@ export function getConfigValues<ConfigOptions extends string>(
  * ```typescript
  * const config = configProxy(
  *   await getConfigValues({
- *     message: 'Hello, World'!,
+ *     message: 'Hello, World!',
  *   })
  * )
  *
  * config.message = 'Hello!' // Runs GM.setValue('message', 'Hello!')
+ * console.log(config.message) // Logs 'Hello!'. Does NOT run GM.getValue
  * ```
  */
 export function configProxy<ConfigOptions extends string>(
