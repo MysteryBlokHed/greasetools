@@ -1,3 +1,7 @@
+export type ConfigObject<ConfigOptions extends string> = {
+  [option in ConfigOptions]: GM.Value
+}
+
 /**
  * Retrieves config options from GreaseMonkey based on the generic type provided
  *
@@ -16,9 +20,9 @@
  * console.log(config.someNumber)
  * ```
  */
-export function getConfigValues<ConfigOptions extends string>(defaults: {
-  [option in ConfigOptions]: GM.Value
-}): Promise<typeof defaults> {
+export function getConfigValues<ConfigOptions extends string>(
+  defaults: ConfigObject<ConfigOptions>
+): Promise<typeof defaults> {
   return new Promise<typeof defaults>(resolve => {
     const config = defaults
 
@@ -57,11 +61,11 @@ export function getConfigValues<ConfigOptions extends string>(defaults: {
  * Get a Proxy that automatically updates GM variables.
  * There should generally only be one Proxy per config option (eg. one proxy that controls `option1` and `option2`
  * and a different one that controls `option3` and `option4`).
- * This is because the returned Proxy doesn't update the value on get, only on set.
+ * This is because the returned Proxy doesn't update the value on get, only on set
  *
  * @param config A config object, such as the one from `getConfigValues`
  * @param callback Called with the Promise returned by `GM.setValue`
- * @returns A Proxy to the config object passed that updates the GreaseMonkey config on set
+ * @returns A Proxy from `config` that updates the GM config on set
  * @example
  * ```typescript
  * const config = configProxy(
@@ -74,9 +78,7 @@ export function getConfigValues<ConfigOptions extends string>(defaults: {
  * ```
  */
 export function configProxy<ConfigOptions extends string>(
-  config: {
-    [option in ConfigOptions]: GM.Value
-  },
+  config: ConfigObject<ConfigOptions>,
   callback?: (gmSetPromise: Promise<void>) => void
 ): typeof config {
   /** Handle sets to the config object */
