@@ -1,6 +1,9 @@
 export type ConfigObject<ConfigOptions extends string> = {
   [option in ConfigOptions]: GM.Value
 }
+export type ConfigProxyObject<ConfigOptions extends string> = {
+  [option in ConfigOptions]: Promise<GM.Value>
+}
 
 /**
  * Retrieves config options from GreaseMonkey based on the generic type provided
@@ -63,7 +66,9 @@ export function getConfigValues<ConfigOptions extends string>(
  * Get a Proxy that automatically updates GM variables.
  * There should generally only be one Proxy per config option (eg. one proxy that controls `option1` and `option2`
  * and a different one that controls `option3` and `option4`).
- * This is because the returned Proxy doesn't update the value on get, only on set
+ * This is because the returned Proxy doesn't update the value on get, only on set.
+ * If multiple Proxies on the same config options are being used to set, then a get Proxy
+ * (`configGetProxy`) to get values might be a good idea
  *
  * @param config A config object, such as the one from `getConfigValues`
  * @param callback Called with the Promise returned by `GM.setValue`
@@ -98,4 +103,45 @@ export function configProxy<ConfigOptions extends string>(
   }
 
   return new Proxy(config, handler)
+}
+
+/**
+ * Get a Proxy that wraps `GM.getValue` for better typing.
+ * Useful when a config value may be modified by multiple different sources,
+ * meaning the value will need to be retrieved from GM every time.
+ * This should not be used if config values are only being modified by one source
+ *
+ * @param config A config object, such as the one returned from `getConfigValues`
+ * @returns A Proxy using the keys of `config` that wraps `GM.getValue`
+ */
+export function configGetProxy<ConfigOptions extends string>(
+  config: ConfigObject<ConfigOptions>
+): ConfigProxyObject<ConfigOptions> {
+  /** Handle gets to the config object */
+  const handler: ProxyHandler<ConfigProxyObject<ConfigOptions>> = {
+    get(target, prop: ConfigOptions): Promise<GM.Value> {
+      return new Promise((resolve, reject) => {
+        // Check if the property is a part of the passed config
+        if (prop in target) {
+          GM.getValue(prop).then(value => {
+            // Resolve with the value if it's defined
+            if (value !== undefined) resolve(value)
+            else reject()
+          })
+        } else {
+          reject()
+        }
+      })
+    },
+
+    /** Proxy isn't meant for setting, so do nothing */
+    set() {
+      return false
+    },
+  }
+
+  return new Proxy(
+    config,
+    handler as unknown as ProxyHandler<ConfigObject<ConfigOptions>>
+  ) as unknown as ConfigProxyObject<ConfigOptions>
 }
