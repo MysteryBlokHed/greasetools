@@ -22,7 +22,7 @@ export declare type ConfigObject<ConfigOptions extends string> = {
  * config.someNumber++ // Does NOT modify GM stored value
  * ```
  */
-export declare function getConfigValues<ConfigOptions extends string>(defaults: ConfigObject<ConfigOptions>): Promise<typeof defaults>;
+export declare function getConfigValues<ConfigOptions extends string>(defaults: ConfigObject<ConfigOptions>): Promise<ConfigObject<ConfigOptions>>;
 /**
  * Get a Proxy that automatically updates GM variables.
  * There should generally only be one Proxy per config option (eg. one proxy that controls `option1` and `option2`
@@ -44,4 +44,4 @@ export declare function getConfigValues<ConfigOptions extends string>(defaults: 
  * console.log(config.message) // Logs 'Hello!'. Does NOT run GM.getValue
  * ```
  */
-export declare function configProxy<ConfigOptions extends string>(config: ConfigObject<ConfigOptions>, callback?: (gmSetPromise: Promise<void>) => void): typeof config;
+export declare function configProxy<ConfigOptions extends string>(config: ConfigObject<ConfigOptions>, callback?: (gmSetPromise: Promise<void>) => void): ConfigObject<ConfigOptions>;

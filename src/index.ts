@@ -24,8 +24,8 @@ export type ConfigObject<ConfigOptions extends string> = {
  */
 export function getConfigValues<ConfigOptions extends string>(
   defaults: ConfigObject<ConfigOptions>
-): Promise<typeof defaults> {
-  return new Promise<typeof defaults>(resolve => {
+): Promise<ConfigObject<ConfigOptions>> {
+  return new Promise<ConfigObject<ConfigOptions>>(resolve => {
     const config = defaults
 
     let optionsRetrieved: { [option in ConfigOptions]?: boolean } = {}
@@ -83,9 +83,9 @@ export function getConfigValues<ConfigOptions extends string>(
 export function configProxy<ConfigOptions extends string>(
   config: ConfigObject<ConfigOptions>,
   callback?: (gmSetPromise: Promise<void>) => void
-): typeof config {
+): ConfigObject<ConfigOptions> {
   /** Handle sets to the config object */
-  const handler: ProxyHandler<typeof config> = {
+  const handler: ProxyHandler<ConfigObject<ConfigOptions>> = {
     set(target, prop: ConfigOptions, value: GM.Value) {
       if (prop in target) {
         const gmSetPromise = GM.setValue(prop, value)
