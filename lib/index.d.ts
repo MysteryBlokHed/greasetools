@@ -2,7 +2,7 @@
 export declare type ConfigObject<ConfigOptions extends string> = {
     [option in ConfigOptions]: GM.Value;
 };
-export declare type ConfigProxyObject<ConfigOptions extends string> = {
+export declare type ConfigPromiseObject<ConfigOptions extends string> = {
     [option in ConfigOptions]: Promise<GM.Value>;
 };
 /**
@@ -59,4 +59,4 @@ export declare function configProxy<ConfigOptions extends string>(config: Config
  * @param config A config object, such as the one returned from `getConfigValues`
  * @returns A Proxy using the keys of `config` that wraps `GM.getValue`
  */
-export declare function configGetProxy<ConfigOptions extends string>(config: ConfigObject<ConfigOptions>): ConfigProxyObject<ConfigOptions>;
+export declare function configGetProxy<ConfigOptions extends string>(config: ConfigObject<ConfigOptions>): ConfigPromiseObject<ConfigOptions>;

@@ -1,7 +1,7 @@
 export type ConfigObject<ConfigOptions extends string> = {
   [option in ConfigOptions]: GM.Value
 }
-export type ConfigProxyObject<ConfigOptions extends string> = {
+export type ConfigPromiseObject<ConfigOptions extends string> = {
   [option in ConfigOptions]: Promise<GM.Value>
 }
 
@@ -116,9 +116,9 @@ export function configProxy<ConfigOptions extends string>(
  */
 export function configGetProxy<ConfigOptions extends string>(
   config: ConfigObject<ConfigOptions>
-): ConfigProxyObject<ConfigOptions> {
+): ConfigPromiseObject<ConfigOptions> {
   /** Handle gets to the config object */
-  const handler: ProxyHandler<ConfigProxyObject<ConfigOptions>> = {
+  const handler: ProxyHandler<ConfigPromiseObject<ConfigOptions>> = {
     get(target, prop: ConfigOptions): Promise<GM.Value> {
       return new Promise((resolve, reject) => {
         // Check if the property is a part of the passed config
@@ -143,5 +143,5 @@ export function configGetProxy<ConfigOptions extends string>(
   return new Proxy(
     config,
     handler as unknown as ProxyHandler<ConfigObject<ConfigOptions>>
-  ) as unknown as ConfigProxyObject<ConfigOptions>
+  ) as unknown as ConfigPromiseObject<ConfigOptions>
 }
