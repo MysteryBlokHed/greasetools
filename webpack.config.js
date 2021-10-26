@@ -22,7 +22,7 @@ module.exports = {
   entry: path.resolve(__dirname, 'lib/index.js'),
   output: {
     filename: outFile,
-    path: __dirname,
+    path: path.resolve(__dirname, 'userscript'),
     library: 'GMTools',
     libraryTarget: 'window',
   },
@@ -51,5 +51,6 @@ module.exports = {
       }),
     ],
   },
-  mode: 'production',
+  mode: 'development',
+  devtool: false,
 }
