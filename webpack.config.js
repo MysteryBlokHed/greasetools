@@ -40,7 +40,6 @@ module.exports = {
         terserOptions: {
           format: {
             comments(_, comment) {
-              console.log('type is', comment.type, 'and val is', comment.value)
               const userScriptComment = /==\/?UserScript==|@/g
               return (
                 comment.type === 'comment1' &&
