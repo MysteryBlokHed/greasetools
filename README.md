@@ -2,6 +2,64 @@
 
 Functions and other tools for GreaseMonkey UserScript development.
 
+## Use
+
+### In a Node project
+
+To use in a Node project, add GMTools as a dependency.
+The package is still in early development and so is not on NPM,
+meaning you'll need to use a Git link.
+
+NPM:
+
+```sh
+npm install git+https://gitlab.com/MysteryBlokHed/gmtools.git
+```
+
+Yarn:
+
+```sh
+yarn add git+https://gitlab.com/MysteryBlokHed/gmtools.git
+```
+
+You can then import and use GMTools functions:
+
+```javascript
+import { configProxy, getConfigValues } from 'gmtools'
+
+const config = configProxy(
+  await getConfigValues({
+    hello: 'World!',
+  })
+)
+```
+
+### In a normal UserScript
+
+In a UserScript that doesn't use a tool like Webpack, you can `@require` the library:
+
+```javascript
+// @require     https://gitlab.com/MysteryBlokHed/gmtools/-/raw/main/userscript/gmtools.user.js
+```
+
+You can replace `main` with a specific release tag like `v0.1.0` to require a specific version:
+
+```javascript
+// @require     https://gitlab.com/MysteryBlokHed/gmtools/-/raw/v0.1.0/userscript/gmtools.user.js
+```
+
+Functions are available on the global `GMTools` object:
+
+```javascript
+const { configProxy, getConfigValues } = GMTools
+
+const config = configProxy(
+  await getConfigValues({
+    hello: 'World!',
+  })
+)
+```
+
 ## License
 
 GMTools is licensed under either of
