@@ -28,5 +28,6 @@ test_build:
   stage: build
   extends: .base
   script:
+    - export NODE_OPTIONS=--openssl-legacy-provider
     - yarn install --cache-folder .yarn-cache
     - yarn build
