@@ -14,7 +14,7 @@
   "scripts": {
     "build": "tsc && webpack",
     "dev": "nodemon -w src -e ts --exec \"yarn build || exit 1\"",
-    "lint": "prettier \"src/**/*\" \"*.{json,md,yml}\""
+    "lint": "prettier \"**/*.{js,ts,json,md,yml}\""
   },
   "devDependencies": {
     "@types/greasemonkey": "^4.0.2",
