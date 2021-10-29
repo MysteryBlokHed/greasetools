@@ -39,13 +39,13 @@ const config = configProxy(
 In a UserScript that doesn't use a tool like Webpack, you can `@require` the library:
 
 ```javascript
-// @require     https://gitlab.com/MysteryBlokHed/gmtools/-/raw/main/userscript/gmtools.user.js
+// @require     https://gitlab.com/MysteryBlokHed/gmtools/-/raw/main/gmtools.user.js
 ```
 
 You can replace `main` with a specific release tag like `v0.1.0` to require a specific version:
 
 ```javascript
-// @require     https://gitlab.com/MysteryBlokHed/gmtools/-/raw/v0.1.0/userscript/gmtools.user.js
+// @require     https://gitlab.com/MysteryBlokHed/gmtools/-/raw/v0.1.0/gmtools.user.js
 ```
 
 Functions are available on the global `GMTools` object:
