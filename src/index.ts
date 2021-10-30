@@ -114,6 +114,18 @@ export function configProxy<ConfigOptions extends string>(
  *
  * @param config A config object, such as the one returned from `getConfigValues`
  * @returns A Proxy using the keys of `config` that wraps `GM.getValue`
+ * @example
+ * ```typescript
+ * const config = configProxy(
+ *   await getConfigValues({
+ *     message: 'Hello, World!',
+ *   })
+ * )
+ *
+ * const configGet = configGetProxy(config)
+ *
+ * console.log(await configGet.message) // Logs the result of GM.getValue('message')
+ * ```
  */
 export function configGetProxy<ConfigOptions extends string>(
   config: ConfigObject<ConfigOptions>
