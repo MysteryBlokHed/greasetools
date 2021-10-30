@@ -44,6 +44,8 @@ You can replace `main` with a specific release tag like `v0.1.0` to require a sp
 // @require     https://gitlab.com/MysteryBlokHed/gmtools/-/raw/v0.1.0/gmtools.user.js
 ```
 
+The UserScript file on tags will be built in production mode, while the file on the main branch will be in development mode.
+
 Functions are available on the global `GMTools` object:
 
 ```javascript
