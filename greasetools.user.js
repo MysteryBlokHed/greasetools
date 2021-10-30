@@ -12,6 +12,54 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./lib/banner.js":
+/*!***********************!*\
+  !*** ./lib/banner.js ***!
+  \***********************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/**
+ * Get a UserScript banner from an object.
+ * Undefined values will be excluded from the banner, so checking if a value is undefined
+ * before passing is not necessary.
+ *
+ * @param props Properties to turn into a banner
+ * @returns A block of comments to be put at the top of a UserScript
+ * including all of the properties passed
+ */
+function genBanner(props) {
+    let final = '// ==UserScript==\n';
+    /**
+     *
+     * @param prop Property name
+     * @param value Value of the property
+     * @returns Formatted version as a comment
+     */
+    const format = (prop, value) => `// @${prop}${' '.repeat(12 - prop.length)}${value}\n`;
+    for (const [key, value] of Object.entries(props)) {
+        if (!value)
+            continue;
+        if (typeof value === 'string') {
+            final += format(key, value);
+        }
+        else {
+            for (const val of value) {
+                if (!val)
+                    continue;
+                final += format(key, val);
+            }
+        }
+    }
+    final += '// ==/UserScript==\n';
+    return final;
+}
+exports["default"] = genBanner;
+
+
+/***/ }),
+
 /***/ "./lib/config.js":
 /*!***********************!*\
   !*** ./lib/config.js ***!
@@ -184,6 +232,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(/*! ./banner */ "./lib/banner.js"), exports);
 __exportStar(__webpack_require__(/*! ./config */ "./lib/config.js"), exports);
 
 
