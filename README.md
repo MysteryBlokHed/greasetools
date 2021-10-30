@@ -13,12 +13,10 @@ meaning you'll need to use a Git link.
 NPM:
 
 ```sh
+# npm
 npm install git+https://gitlab.com/MysteryBlokHed/gmtools.git
-```
 
-Yarn:
-
-```sh
+# yarn
 yarn add git+https://gitlab.com/MysteryBlokHed/gmtools.git
 ```
 
