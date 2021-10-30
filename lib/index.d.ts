@@ -22,7 +22,8 @@ export declare type ConfigPromiseObject<ConfigOptions extends string> = {
  * console.log(config.somethingEnabled)
  * console.log(config.someNumber)
  *
- * config.someNumber++ // Does NOT modify GM stored value
+ * config.someNumber++ // Does NOT modify GM stored value.
+ *                     // Pass the return of this function to configProxy for that functionality
  * ```
  */
 export declare function getConfigValues<ConfigOptions extends string>(defaults: ConfigObject<ConfigOptions>): Promise<ConfigObject<ConfigOptions>>;

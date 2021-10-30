@@ -37,7 +37,8 @@ exports.configGetProxy = exports.configProxy = exports.getConfigValues = void 0;
  * console.log(config.somethingEnabled)
  * console.log(config.someNumber)
  *
- * config.someNumber++ // Does NOT modify GM stored value
+ * config.someNumber++ // Does NOT modify GM stored value.
+ *                     // Pass the return of this function to configProxy for that functionality
  * ```
  */
 function getConfigValues(defaults) {
