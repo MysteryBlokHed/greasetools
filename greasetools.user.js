@@ -1,6 +1,6 @@
 
 // ==UserScript==
-// @name        gmtools
+// @name        greasetools
 // @description Functions and other tools for GreaseMonkey UserScript development.
 // @version     0.1.0
 // @author      Adam Thompson-Sharpe
@@ -164,6 +164,6 @@ exports.configGetProxy = configGetProxy;
 
 })();
 
-window.GMTools = __webpack_exports__;
+window.GreaseTools = __webpack_exports__;
 /******/ })()
 ;

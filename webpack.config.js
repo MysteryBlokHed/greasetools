@@ -23,7 +23,7 @@ module.exports = {
   output: {
     filename: outFile,
     path: __dirname,
-    library: 'GMTools',
+    library: 'GreaseTools',
     libraryTarget: 'window',
   },
   plugins: [

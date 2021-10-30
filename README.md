@@ -1,4 +1,4 @@
-# GMTools
+# GreaseTools
 
 Functions and other tools for GreaseMonkey UserScript development.
 
@@ -6,22 +6,20 @@ Functions and other tools for GreaseMonkey UserScript development.
 
 ### In a Node project
 
-To use in a Node project, add GMTools as a dependency.
-The package is still in early development and so is not on NPM,
-meaning you'll need to use a Git link.
+To use in a Node project, add GreaseTools as a dependency.
 
 ```sh
 # npm
-npm install git+https://gitlab.com/MysteryBlokHed/gmtools.git
+npm install greasetools
 
 # yarn
-yarn add git+https://gitlab.com/MysteryBlokHed/gmtools.git
+yarn add greasetools
 ```
 
-You can then import and use GMTools functions:
+You can then import and use GreaseTools functions:
 
 ```javascript
-import { configProxy, getConfigValues } from 'gmtools'
+import { configProxy, getConfigValues } from 'greasetools'
 
 const config = configProxy(
   await getConfigValues({
@@ -35,21 +33,21 @@ const config = configProxy(
 In a UserScript that isn't built with Node.js, you can `@require` the library:
 
 ```javascript
-// @require     https://gitlab.com/MysteryBlokHed/gmtools/-/raw/main/gmtools.user.js
+// @require     https://gitlab.com/MysteryBlokHed/greasetools/-/raw/main/greasetools.user.js
 ```
 
 You can replace `main` with a specific release tag like `v0.1.0` to require a specific version:
 
 ```javascript
-// @require     https://gitlab.com/MysteryBlokHed/gmtools/-/raw/v0.1.0/gmtools.user.js
+// @require     https://gitlab.com/MysteryBlokHed/greasetools/-/raw/v0.1.0/greasetools.user.js
 ```
 
 The UserScript file on tags will be built in production mode, while the file on the main branch will be in development mode.
 
-Functions are available on the global `GMTools` object:
+Functions are available on the global `GreaseTools` object:
 
 ```javascript
-const { configProxy, getConfigValues } = GMTools
+const { configProxy, getConfigValues } = GreaseTools
 
 const config = configProxy(
   await getConfigValues({
@@ -60,7 +58,7 @@ const config = configProxy(
 
 ## License
 
-GMTools is licensed under either of
+GreaseTools is licensed under either of
 
 - Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or
   <http://www.apache.org/licenses/LICENSE-2.0>)

@@ -1,12 +1,12 @@
 {
-  "name": "gmtools",
+  "name": "greasetools",
   "version": "0.1.0",
   "description": "Functions and other tools for GreaseMonkey UserScript development.",
   "author": "Adam Thompson-Sharpe",
   "license": "MIT OR Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/MysteryBlokHed/gmtools.git"
+    "url": "https://gitlab.com/MysteryBlokHed/greasetools.git"
   },
   "files": [
     "lib/**/*",
@@ -14,7 +14,7 @@
     "CHANGELOG.md",
     "README.md"
   ],
-  "homepage": "https://gitlab.com/MysteryBlokHed/gmtools#gmtools",
+  "homepage": "https://gitlab.com/MysteryBlokHed/greasetools#greasetools",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
