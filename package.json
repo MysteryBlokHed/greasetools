@@ -10,8 +10,8 @@
   },
   "files": [
     "lib/**/*",
-    "LICENSE-APACHE",
-    "LICENSE-MIT",
+    "LICENSE*",
+    "CHANGELOG.md",
     "README.md"
   ],
   "homepage": "https://gitlab.com/MysteryBlokHed/gmtools#gmtools",
