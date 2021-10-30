@@ -10,8 +10,6 @@ To use in a Node project, add GMTools as a dependency.
 The package is still in early development and so is not on NPM,
 meaning you'll need to use a Git link.
 
-NPM:
-
 ```sh
 # npm
 npm install git+https://gitlab.com/MysteryBlokHed/gmtools.git
