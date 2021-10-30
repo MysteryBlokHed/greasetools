@@ -104,8 +104,7 @@ function configProxy(config, callback) {
                 const gmSetPromise = GM.setValue(prop, value);
                 if (callback)
                     callback(gmSetPromise);
-                target[prop] = value;
-                return true;
+                return Reflect.set(target, prop, value);
             }
             return false;
         },
