@@ -32,7 +32,7 @@ const config = configProxy(
 
 ### In a normal UserScript
 
-In a UserScript that doesn't use a tool like Webpack, you can `@require` the library:
+In a UserScript that isn't built with Node.js, you can `@require` the library:
 
 ```javascript
 // @require     https://gitlab.com/MysteryBlokHed/gmtools/-/raw/main/gmtools.user.js
