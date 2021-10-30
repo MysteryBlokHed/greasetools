@@ -31,12 +31,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
  */
 function genBanner(props) {
     let final = '// ==UserScript==\n';
-    /**
-     *
-     * @param prop Property name
-     * @param value Value of the property
-     * @returns Formatted version as a comment
-     */
     const format = (prop, value) => `// @${prop}${' '.repeat(12 - prop.length)}${value}\n`;
     for (const [key, value] of Object.entries(props)) {
         if (!value)
@@ -232,7 +226,9 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__webpack_require__(/*! ./banner */ "./lib/banner.js"), exports);
+exports.genBanner = void 0;
+var banner_1 = __webpack_require__(/*! ./banner */ "./lib/banner.js");
+Object.defineProperty(exports, "genBanner", ({ enumerable: true, get: function () { return banner_1.default; } }));
 __exportStar(__webpack_require__(/*! ./config */ "./lib/config.js"), exports);
 
 

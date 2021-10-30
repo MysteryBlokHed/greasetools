@@ -1,2 +1,2 @@
-export * from './banner';
+export { default as genBanner } from './banner';
 export * from './config';
