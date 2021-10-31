@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Function to generate a UserScript header from an object
+
+### Changed
+
+- Moved related functions to their own files
+
 ## 0.1.0
 
 ### Added
