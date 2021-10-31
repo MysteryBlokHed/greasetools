@@ -32,11 +32,14 @@ export function getConfigValues<ConfigOptions extends string>(
   return new Promise<ConfigObject<ConfigOptions>>(resolve => {
     const config = defaults
 
-    let optionsRetrieved: { [option in ConfigOptions]?: boolean } = {}
+    const optionsRetrieved = (() => {
+      let object: { [option in ConfigOptions]?: boolean } = {}
+      for (const option of Object.keys(config) as ConfigOptions[]) {
+        object[option] = false
+      }
 
-    for (const option of Object.keys(config) as ConfigOptions[]) {
-      optionsRetrieved[option] = false
-    }
+      return object as { [option in ConfigOptions]: boolean }
+    })()
 
     const optionRetrieved = () => {
       if (Object.values(optionRetrieved).every(v => v)) {
