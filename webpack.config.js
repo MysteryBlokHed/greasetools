@@ -1,19 +1,19 @@
+const genBanner = require('.').genBanner
 const path = require('path')
 const TerserPlugin = require('terser-webpack-plugin')
 const webpack = require('webpack')
 const package = require('./package.json')
 
 /** The UserScript info to add to the top of the outputted file */
-const banner = `
-// ==UserScript==
-// @name        ${package.name}
-// @description ${package.description}
-// @version     ${package.version}
-// @author      ${package.author}
-// @grant       GM.setValue
-// @grant       GM.getValue
-// ==/UserScript==
-`
+const banner = genBanner({
+  name: package.name,
+  description: package.description,
+  version: package.version,
+  author: package.author,
+  license: package.license,
+  homepageURL: package.homepage,
+  grant: ['GM.setValue', 'GM.getValue'],
+})
 
 /** The name of the generated UserScript file */
 const outFile = `${package.name}.user.js`

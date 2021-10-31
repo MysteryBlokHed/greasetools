@@ -1,9 +1,10 @@
-
 // ==UserScript==
 // @name        greasetools
 // @description Functions and other tools for GreaseMonkey UserScript development.
 // @version     0.1.0
 // @author      Adam Thompson-Sharpe
+// @license     MIT OR Apache-2.0
+// @homepageURL https://gitlab.com/MysteryBlokHed/greasetools#greasetools
 // @grant       GM.setValue
 // @grant       GM.getValue
 // ==/UserScript==
@@ -87,10 +88,13 @@ exports.configGetProxy = exports.configProxy = exports.getConfigValues = void 0;
 function getConfigValues(defaults) {
     return new Promise(resolve => {
         const config = defaults;
-        let optionsRetrieved = {};
-        for (const option of Object.keys(config)) {
-            optionsRetrieved[option] = false;
-        }
+        const optionsRetrieved = (() => {
+            let object = {};
+            for (const option of Object.keys(config)) {
+                object[option] = false;
+            }
+            return object;
+        })();
         const optionRetrieved = () => {
             if (Object.values(optionRetrieved).every(v => v)) {
                 resolve(config);
