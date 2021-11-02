@@ -19,10 +19,10 @@ yarn add greasetools
 You can then import and use GreaseTools functions:
 
 ```javascript
-import { configProxy, getConfigValues } from 'greasetools'
+import { valuesProxy, getValues } from 'greasetools'
 
-const config = configProxy(
-  await getConfigValues({
+const values = valuesProxy(
+  await getValues({
     hello: 'World!',
   })
 )
@@ -47,10 +47,10 @@ The UserScript file on tags will be built in production mode, while the file on 
 Functions are available on the global `GreaseTools` object:
 
 ```javascript
-const { configProxy, getConfigValues } = GreaseTools
+const { valuesProxy, getValues } = GreaseTools
 
-const config = configProxy(
-  await getConfigValues({
+const values = valuesProxy(
+  await getValues({
     hello: 'World!',
   })
 )
