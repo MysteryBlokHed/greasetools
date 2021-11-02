@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Refactored functions and files named `config` to use the word `values` instead
 - Moved related functions to their own files
 
 ## 0.1.0
