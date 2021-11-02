@@ -10,9 +10,7 @@
  * including all of the properties passed
  */
 export default function genBanner(
-  props: {
-    [key: string]: string | (string | undefined)[] | undefined
-  },
+  props: { [key: string]: string | (string | undefined)[] | undefined },
   spacing = 12
 ): string {
   let final = '// ==UserScript==\n'
