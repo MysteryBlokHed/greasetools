@@ -93,6 +93,7 @@ __exportStar(__webpack_require__(/*! ./values */ "./lib/values.js"), exports);
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.deleteValue = exports.valuesGetProxy = exports.valuesProxy = exports.getValues = void 0;
 /**
+ * Requires the `GM.getValue` grant.
  * Retrieves values from GreaseMonkey based on the generic type provided
  *
  * @param defaults The default values if they are undefined.
@@ -149,6 +150,7 @@ function getValues(defaults) {
 }
 exports.getValues = getValues;
 /**
+ * Requires the `GM.setValue` grant.
  * Get a Proxy that automatically updates GM variables.
  * There should generally only be one Proxy per option (eg. one proxy that controls `option1` and `option2`
  * and a different one that controls `option3` and `option4`).
@@ -188,6 +190,7 @@ function valuesProxy(values, callback) {
 }
 exports.valuesProxy = valuesProxy;
 /**
+ * Requires the `GM.getValue` grant.
  * Get a Proxy that wraps `GM.getValue` for better typing.
  * Useful when a value may be modified by multiple different sources,
  * meaning the value will need to be retrieved from GM every time.
@@ -237,6 +240,7 @@ function valuesGetProxy(values) {
 }
 exports.valuesGetProxy = valuesGetProxy;
 /**
+ * Requires the `GM.deleteValue` grant.
  * Deletes a value from a values object.
  * This is only useful if you're using TypeScript or your editor has typing support.
  * If that doesn't describe your use case, then use `GM.deleteValue` instead.
