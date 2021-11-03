@@ -1,8 +1,8 @@
 /// <reference types="greasemonkey" />
-export declare type ValuesObject<Values extends string> = {
+export declare type ValuesObject<Values extends string = string> = {
     [option in Values]: GM.Value;
 };
-export declare type ValuesPromiseObject<Values extends string> = {
+export declare type ValuesPromiseObject<Values extends string = string> = {
     [option in Values]: Promise<GM.Value>;
 };
 /**
@@ -28,6 +28,21 @@ export declare type ValuesPromiseObject<Values extends string> = {
  * ```
  */
 export declare function getValues<Values extends string>(defaults: ValuesObject<Values>): Promise<ValuesObject<Values>>;
+/**
+ * Requires the `GM.getValue` and `GM.listValues` grants.
+ * Returns a values object containing every saved value for the UserScript
+ *
+ * @returns A Promise that resolves to the defined values or rejects with nothing.
+ * @example
+ * ```typescript
+ * // Logs all key/value pairs from GreaseMonkey
+ * const allValues = await getAllValues()
+ * for (const [key, value] of Object.entries(allValues)) {
+ *   console.log(key, value)
+ * }
+ * ```
+ */
+export declare function getAllValues(): Promise<ValuesObject>;
 /**
  * Requires the `GM.setValue` grant.
  * Get a Proxy that automatically updates GM variables.

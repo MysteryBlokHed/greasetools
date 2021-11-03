@@ -1,7 +1,7 @@
-export type ValuesObject<Values extends string> = {
+export type ValuesObject<Values extends string = string> = {
   [option in Values]: GM.Value
 }
-export type ValuesPromiseObject<Values extends string> = {
+export type ValuesPromiseObject<Values extends string = string> = {
   [option in Values]: Promise<GM.Value>
 }
 
@@ -65,6 +65,31 @@ export function getValues<Values extends string>(
       })
     }
   })
+}
+
+/**
+ * Requires the `GM.getValue` and `GM.listValues` grants.
+ * Returns a values object containing every saved value for the UserScript
+ *
+ * @returns A Promise that resolves to the defined values or rejects with nothing.
+ * @example
+ * ```typescript
+ * // Logs all key/value pairs from GreaseMonkey
+ * const allValues = await getAllValues()
+ * for (const [key, value] of Object.entries(allValues)) {
+ *   console.log(key, value)
+ * }
+ * ```
+ */
+export async function getAllValues(): Promise<ValuesObject> {
+  const valueNames = await GM.listValues()
+  const defaults = (() => {
+    const emptyDefault: { [key: string]: '' } = {}
+    for (const value of valueNames) emptyDefault[value] = ''
+    return emptyDefault
+  })()
+
+  return getValues(defaults)
 }
 
 /**
