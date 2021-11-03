@@ -7,6 +7,7 @@
 // @homepageURL https://gitlab.com/MysteryBlokHed/greasetools#greasetools
 // @grant       GM.setValue
 // @grant       GM.getValue
+// @grant       GM.deleteValue
 // ==/UserScript==
 
 /******/ (() => { // webpackBootstrap
