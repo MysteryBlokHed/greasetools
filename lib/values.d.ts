@@ -73,3 +73,14 @@ export declare function valuesProxy<Values extends string>(values: ValuesObject<
  * ```
  */
 export declare function valuesGetProxy<Values extends string>(values: ValuesObject<Values>): ValuesPromiseObject<Values>;
+/**
+ * Deletes a value from a values object.
+ * This is only useful if you're using TypeScript or your editor has typing support.
+ * If that doesn't describe your use case, then use `GM.deleteValue` instead.
+ *
+ * @param values A values object, such as the one returned from `getValues`
+ * @param toDelete The value to delete
+ * @returns A Promise that resolves with a new object without the deleted type,
+ * or rejects with nothing if the deletion failed
+ */
+export declare function deleteValue<Values extends string, ToDelete extends Values>(values: ValuesObject<Values>, toDelete: ToDelete): Promise<Omit<ValuesObject<Values>, ToDelete>>;
