@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Function to generate a UserScript header from an object
+- Function to delete a value with full typing support
+- Required `@grant`'s to function docs
 
 ### Changed
 
