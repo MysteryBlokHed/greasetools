@@ -5,9 +5,6 @@
 // @author      Adam Thompson-Sharpe
 // @license     MIT OR Apache-2.0
 // @homepageURL https://gitlab.com/MysteryBlokHed/greasetools#greasetools
-// @grant       GM.setValue
-// @grant       GM.getValue
-// @grant       GM.deleteValue
 // ==/UserScript==
 
 /******/ (() => { // webpackBootstrap

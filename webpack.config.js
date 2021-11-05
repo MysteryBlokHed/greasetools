@@ -12,7 +12,6 @@ const banner = genBanner({
   author: package.author,
   license: package.license,
   homepageURL: package.homepage,
-  grant: ['GM.setValue', 'GM.getValue', 'GM.deleteValue'],
 })
 
 /** The name of the generated UserScript file */
