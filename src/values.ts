@@ -14,6 +14,16 @@ function checkGrants(
   return true
 }
 
+/** Ensure that the values passed are all strings for use with `localStorage` */
+function ensureString(values: any[]) {
+  for (const value of Object.values(values)) {
+    if (typeof value !== 'string')
+      throw TypeError(
+        'Only string is supported for values when localStorage is being used'
+      )
+  }
+}
+
 /**
  * Requires the `GM.getValue` grant.
  * Retrieves values from GreaseMonkey based on the generic type provided
@@ -44,14 +54,7 @@ export function getValues<Values extends string>(
 
     const grants = checkGrants('getValue')
 
-    if (!grants) {
-      for (const value of Object.values(values)) {
-        if (typeof value !== 'string')
-          throw TypeError(
-            'Only string is supported for values when localStorage is being used'
-          )
-      }
-    }
+    if (!grants) ensureString(Object.values(values))
 
     const valuesRetrieved = (() => {
       let object: { [option in Values]?: boolean } = {}
@@ -132,7 +135,7 @@ export async function getAllValues(): Promise<ValuesObject> {
 
 /**
  * Requires the `GM.setValue` grant.
- * Get a Proxy that automatically updates GM variables.
+ * Get a Proxy that automatically updates values.
  * There should generally only be one Proxy per option (eg. one proxy that controls `option1` and `option2`
  * and a different one that controls `option3` and `option4`).
  * This is because the returned Proxy doesn't update the value on get, only on set.
@@ -158,12 +161,22 @@ export function valuesProxy<Values extends string>(
   values: ValuesObject<Values>,
   callback?: (gmSetPromise: Promise<void>) => void
 ): ValuesObject<Values> {
+  const grants = checkGrants('setValue')
+
   /** Handle sets to the values object */
   const handler: ProxyHandler<ValuesObject<Values>> = {
     set(target, prop: Values, value: GM.Value) {
       if (prop in target) {
-        const gmSetPromise = GM.setValue(prop, value)
-        if (callback) callback(gmSetPromise)
+        // Using GreaseMonkey
+        if (grants) {
+          const gmSetPromise = GM.setValue(prop, value)
+          if (callback) callback(gmSetPromise)
+          // Using localStorage
+        } else {
+          ensureString([value])
+          localStorage.setItem(prop, value as string)
+        }
+
         return Reflect.set(target, prop, value)
       }
       return false

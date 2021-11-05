@@ -45,7 +45,7 @@ export declare function getValues<Values extends string>(defaults: ValuesObject<
 export declare function getAllValues(): Promise<ValuesObject>;
 /**
  * Requires the `GM.setValue` grant.
- * Get a Proxy that automatically updates GM variables.
+ * Get a Proxy that automatically updates values.
  * There should generally only be one Proxy per option (eg. one proxy that controls `option1` and `option2`
  * and a different one that controls `option3` and `option4`).
  * This is because the returned Proxy doesn't update the value on get, only on set.
