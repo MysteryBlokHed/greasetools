@@ -5,6 +5,15 @@ export type ValuesPromiseObject<Values extends string = string> = {
   [option in Values]: Promise<GM.Value>
 }
 
+/** Used by functions to check if grants are present */
+function checkGrants(
+  ...grants: ('setValue' | 'getValue' | 'deleteValue' | 'listValues')[]
+): boolean {
+  if (!GM) return false
+  for (const grant of grants) if (!(grant in GM)) return false
+  return true
+}
+
 /**
  * Requires the `GM.getValue` grant.
  * Retrieves values from GreaseMonkey based on the generic type provided
@@ -33,7 +42,18 @@ export function getValues<Values extends string>(
   return new Promise<ValuesObject<Values>>(resolve => {
     const values = defaults
 
-    const optionsRetrieved = (() => {
+    const grants = checkGrants('getValue')
+
+    if (!grants) {
+      for (const value of Object.values(values)) {
+        if (typeof value !== 'string')
+          throw TypeError(
+            'Only string is supported for values when localStorage is being used'
+          )
+      }
+    }
+
+    const valuesRetrieved = (() => {
       let object: { [option in Values]?: boolean } = {}
       for (const option of Object.keys(values) as Values[]) {
         object[option] = false
@@ -49,18 +69,30 @@ export function getValues<Values extends string>(
     }
 
     // Iterate over values
-    for (const option of Object.keys(optionsRetrieved) as Values[]) {
+    for (const key of Object.keys(valuesRetrieved) as Values[]) {
+      // Using localStorage
+      if (!grants) {
+        const value = localStorage.getItem(key)
+
+        if (value !== null) values[key] = value
+        else localStorage.setItem(key, values[key] as string)
+
+        valuesRetrieved[key] = true
+        optionRetrieved()
+        continue
+      }
+
       // Get the option from GreaseMonkey
-      GM.getValue(option).then(async value => {
+      GM.getValue(key).then(async value => {
         if (value !== undefined) {
           // If the value is defined, update the values object
-          values[option] = value
-          optionsRetrieved[option] = true
+          values[key] = value
         } else {
           // If the value is undefined, set it to the default value from the values object
-          await GM.setValue(option, values[option])
-          optionsRetrieved[option] = true
+          await GM.setValue(key, values[key])
         }
+
+        valuesRetrieved[key] = true
         optionRetrieved()
       })
     }
