@@ -4,6 +4,10 @@ Functions and other tools for GreaseMonkey UserScript development.
 
 ## Use
 
+Most functions will require some `@grant`'s to work properly,
+but can fall back to other things like the browser's localStorage if grants aren't found.
+Information for each function can be found in its docs.
+
 ### In a Node project
 
 To use in a Node project, add GreaseTools as a dependency.
