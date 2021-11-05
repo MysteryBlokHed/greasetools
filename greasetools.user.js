@@ -260,7 +260,7 @@ function valuesProxy(values, callback) {
 }
 exports.valuesProxy = valuesProxy;
 /**
- * Requires the `GM.getValue` grant.
+ * Requires the `GM.getValue` grant or falls back to using localStorage.
  * Get a Proxy that wraps `GM.getValue` for better typing.
  * Useful when a value may be modified by multiple different sources,
  * meaning the value will need to be retrieved from GM every time.
@@ -282,19 +282,31 @@ exports.valuesProxy = valuesProxy;
  * ```
  */
 function valuesGetProxy(values) {
+    const grants = checkGrants('getValue');
     /** Handle gets to the values object */
     const handler = {
         get(target, prop) {
             return new Promise((resolve, reject) => {
                 // Check if the property is a part of the passed values
                 if (prop in target) {
-                    GM.getValue(prop).then(value => {
-                        // Resolve with the value if it's defined
-                        if (value !== undefined)
+                    // Using GreaseMonkey
+                    if (grants) {
+                        GM.getValue(prop).then(value => {
+                            // Resolve with the value if it's defined
+                            if (value !== undefined)
+                                resolve(value);
+                            else
+                                reject();
+                        });
+                        // Using localStorage
+                    }
+                    else {
+                        const value = localStorage.getItem(prop);
+                        if (value !== null)
                             resolve(value);
                         else
                             reject();
-                    });
+                    }
                 }
                 else {
                     reject();
@@ -310,7 +322,7 @@ function valuesGetProxy(values) {
 }
 exports.valuesGetProxy = valuesGetProxy;
 /**
- * Requires the `GM.deleteValue` grant.
+ * Requires the `GM.deleteValue` grant or falls back to localStorage.
  * Deletes a value from a values object.
  * This is only useful if you're using TypeScript or your editor has typing support.
  * If that doesn't describe your use case, then use `GM.deleteValue` instead.
@@ -323,7 +335,12 @@ exports.valuesGetProxy = valuesGetProxy;
 function deleteValue(values, toDelete) {
     return new Promise(async (resolve, reject) => {
         if (toDelete in values) {
-            await GM.deleteValue(toDelete);
+            // Using GreaseMonkey
+            if (checkGrants('deleteValue'))
+                await GM.deleteValue(toDelete);
+            // Using localStorage
+            else
+                localStorage.removeItem(toDelete);
             delete values[toDelete];
             resolve(values);
         }

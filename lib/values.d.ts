@@ -69,7 +69,7 @@ export declare function getAllValues(): Promise<ValuesObject>;
  */
 export declare function valuesProxy<Values extends string>(values: ValuesObject<Values>, callback?: (gmSetPromise: Promise<void>) => void): ValuesObject<Values>;
 /**
- * Requires the `GM.getValue` grant.
+ * Requires the `GM.getValue` grant or falls back to using localStorage.
  * Get a Proxy that wraps `GM.getValue` for better typing.
  * Useful when a value may be modified by multiple different sources,
  * meaning the value will need to be retrieved from GM every time.
@@ -92,7 +92,7 @@ export declare function valuesProxy<Values extends string>(values: ValuesObject<
  */
 export declare function valuesGetProxy<Values extends string>(values: ValuesObject<Values>): ValuesPromiseObject<Values>;
 /**
- * Requires the `GM.deleteValue` grant.
+ * Requires the `GM.deleteValue` grant or falls back to localStorage.
  * Deletes a value from a values object.
  * This is only useful if you're using TypeScript or your editor has typing support.
  * If that doesn't describe your use case, then use `GM.deleteValue` instead.
