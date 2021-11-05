@@ -6,7 +6,7 @@ export declare type ValuesPromiseObject<Values extends string = string> = {
     [option in Values]: Promise<GM.Value>;
 };
 /**
- * Requires the `GM.getValue` grant.
+ * Requires the `GM.getValue` grant or falls back to using localStorage.
  * Retrieves values from GreaseMonkey based on the generic type provided
  *
  * @param defaults The default values if they are undefined.
@@ -29,7 +29,7 @@ export declare type ValuesPromiseObject<Values extends string = string> = {
  */
 export declare function getValues<Values extends string>(defaults: ValuesObject<Values>): Promise<ValuesObject<Values>>;
 /**
- * Requires the `GM.getValue` and `GM.listValues` grants.
+ * Requires the `GM.getValue` and `GM.listValues` grants or falls back to using localStorage.
  * Returns a values object containing every saved value for the UserScript
  *
  * @returns A Promise that resolves to the defined values or rejects with nothing.
@@ -44,7 +44,7 @@ export declare function getValues<Values extends string>(defaults: ValuesObject<
  */
 export declare function getAllValues(): Promise<ValuesObject>;
 /**
- * Requires the `GM.setValue` grant.
+ * Requires the `GM.setValue` grant or falls back to using localStorage.
  * Get a Proxy that automatically updates values.
  * There should generally only be one Proxy per option (eg. one proxy that controls `option1` and `option2`
  * and a different one that controls `option3` and `option4`).
