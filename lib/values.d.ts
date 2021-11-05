@@ -6,7 +6,7 @@ export declare type ValuesPromiseObject<Values extends string = string> = {
     [option in Values]: Promise<GM.Value>;
 };
 /**
- * Requires the `GM.getValue` grant.
+ * Requires the `GM.getValue` grant or falls back to using localStorage.
  * Retrieves values from GreaseMonkey based on the generic type provided
  *
  * @param defaults The default values if they are undefined.
@@ -29,7 +29,7 @@ export declare type ValuesPromiseObject<Values extends string = string> = {
  */
 export declare function getValues<Values extends string>(defaults: ValuesObject<Values>): Promise<ValuesObject<Values>>;
 /**
- * Requires the `GM.getValue` and `GM.listValues` grants.
+ * Requires the `GM.getValue` and `GM.listValues` grants or falls back to using localStorage.
  * Returns a values object containing every saved value for the UserScript
  *
  * @returns A Promise that resolves to the defined values or rejects with nothing.
@@ -44,8 +44,8 @@ export declare function getValues<Values extends string>(defaults: ValuesObject<
  */
 export declare function getAllValues(): Promise<ValuesObject>;
 /**
- * Requires the `GM.setValue` grant.
- * Get a Proxy that automatically updates GM variables.
+ * Requires the `GM.setValue` grant or falls back to using localStorage.
+ * Get a Proxy that automatically updates values.
  * There should generally only be one Proxy per option (eg. one proxy that controls `option1` and `option2`
  * and a different one that controls `option3` and `option4`).
  * This is because the returned Proxy doesn't update the value on get, only on set.
@@ -69,7 +69,7 @@ export declare function getAllValues(): Promise<ValuesObject>;
  */
 export declare function valuesProxy<Values extends string>(values: ValuesObject<Values>, callback?: (gmSetPromise: Promise<void>) => void): ValuesObject<Values>;
 /**
- * Requires the `GM.getValue` grant.
+ * Requires the `GM.getValue` grant or falls back to using localStorage.
  * Get a Proxy that wraps `GM.getValue` for better typing.
  * Useful when a value may be modified by multiple different sources,
  * meaning the value will need to be retrieved from GM every time.
@@ -92,7 +92,7 @@ export declare function valuesProxy<Values extends string>(values: ValuesObject<
  */
 export declare function valuesGetProxy<Values extends string>(values: ValuesObject<Values>): ValuesPromiseObject<Values>;
 /**
- * Requires the `GM.deleteValue` grant.
+ * Requires the `GM.deleteValue` grant or falls back to localStorage.
  * Deletes a value from a values object.
  * This is only useful if you're using TypeScript or your editor has typing support.
  * If that doesn't describe your use case, then use `GM.deleteValue` instead.

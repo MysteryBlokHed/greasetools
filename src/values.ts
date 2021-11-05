@@ -5,8 +5,27 @@ export type ValuesPromiseObject<Values extends string = string> = {
   [option in Values]: Promise<GM.Value>
 }
 
+/** Used by functions to check if grants are present */
+function checkGrants(
+  ...grants: ('setValue' | 'getValue' | 'deleteValue' | 'listValues')[]
+): boolean {
+  if (!GM) return false
+  for (const grant of grants) if (!(grant in GM)) return false
+  return true
+}
+
+/** Ensure that the values passed are all strings for use with `localStorage` */
+function ensureString(values: any[]) {
+  for (const value of Object.values(values)) {
+    if (typeof value !== 'string')
+      throw TypeError(
+        'Only string is supported for values when localStorage is being used'
+      )
+  }
+}
+
 /**
- * Requires the `GM.getValue` grant.
+ * Requires the `GM.getValue` grant or falls back to using localStorage.
  * Retrieves values from GreaseMonkey based on the generic type provided
  *
  * @param defaults The default values if they are undefined.
@@ -33,7 +52,11 @@ export function getValues<Values extends string>(
   return new Promise<ValuesObject<Values>>(resolve => {
     const values = defaults
 
-    const optionsRetrieved = (() => {
+    const grants = checkGrants('getValue')
+
+    if (!grants) ensureString(Object.values(values))
+
+    const valuesRetrieved = (() => {
       let object: { [option in Values]?: boolean } = {}
       for (const option of Object.keys(values) as Values[]) {
         object[option] = false
@@ -49,18 +72,30 @@ export function getValues<Values extends string>(
     }
 
     // Iterate over values
-    for (const option of Object.keys(optionsRetrieved) as Values[]) {
+    for (const key of Object.keys(valuesRetrieved) as Values[]) {
+      // Using localStorage
+      if (!grants) {
+        const value = localStorage.getItem(key)
+
+        if (value !== null) values[key] = value
+        else localStorage.setItem(key, values[key] as string)
+
+        valuesRetrieved[key] = true
+        optionRetrieved()
+        continue
+      }
+
       // Get the option from GreaseMonkey
-      GM.getValue(option).then(async value => {
+      GM.getValue(key).then(async value => {
         if (value !== undefined) {
           // If the value is defined, update the values object
-          values[option] = value
-          optionsRetrieved[option] = true
+          values[key] = value
         } else {
           // If the value is undefined, set it to the default value from the values object
-          await GM.setValue(option, values[option])
-          optionsRetrieved[option] = true
+          await GM.setValue(key, values[key])
         }
+
+        valuesRetrieved[key] = true
         optionRetrieved()
       })
     }
@@ -68,7 +103,7 @@ export function getValues<Values extends string>(
 }
 
 /**
- * Requires the `GM.getValue` and `GM.listValues` grants.
+ * Requires the `GM.getValue` and `GM.listValues` grants or falls back to using localStorage.
  * Returns a values object containing every saved value for the UserScript
  *
  * @returns A Promise that resolves to the defined values or rejects with nothing.
@@ -82,7 +117,13 @@ export function getValues<Values extends string>(
  * ```
  */
 export async function getAllValues(): Promise<ValuesObject> {
-  const valueNames = await GM.listValues()
+  const valueNames = await (async () => {
+    // Using localStorage
+    if (!checkGrants('getValue', 'listValues')) return Object.keys(localStorage)
+    // Using GreaseMonkey
+    return GM.listValues()
+  })()
+
   const defaults = (() => {
     const emptyDefault: { [key: string]: '' } = {}
     for (const value of valueNames) emptyDefault[value] = ''
@@ -93,8 +134,8 @@ export async function getAllValues(): Promise<ValuesObject> {
 }
 
 /**
- * Requires the `GM.setValue` grant.
- * Get a Proxy that automatically updates GM variables.
+ * Requires the `GM.setValue` grant or falls back to using localStorage.
+ * Get a Proxy that automatically updates values.
  * There should generally only be one Proxy per option (eg. one proxy that controls `option1` and `option2`
  * and a different one that controls `option3` and `option4`).
  * This is because the returned Proxy doesn't update the value on get, only on set.
@@ -120,12 +161,22 @@ export function valuesProxy<Values extends string>(
   values: ValuesObject<Values>,
   callback?: (gmSetPromise: Promise<void>) => void
 ): ValuesObject<Values> {
+  const grants = checkGrants('setValue')
+
   /** Handle sets to the values object */
   const handler: ProxyHandler<ValuesObject<Values>> = {
     set(target, prop: Values, value: GM.Value) {
       if (prop in target) {
-        const gmSetPromise = GM.setValue(prop, value)
-        if (callback) callback(gmSetPromise)
+        // Using GreaseMonkey
+        if (grants) {
+          const gmSetPromise = GM.setValue(prop, value)
+          if (callback) callback(gmSetPromise)
+          // Using localStorage
+        } else {
+          ensureString([value])
+          localStorage.setItem(prop, value as string)
+        }
+
         return Reflect.set(target, prop, value)
       }
       return false
@@ -136,7 +187,7 @@ export function valuesProxy<Values extends string>(
 }
 
 /**
- * Requires the `GM.getValue` grant.
+ * Requires the `GM.getValue` grant or falls back to using localStorage.
  * Get a Proxy that wraps `GM.getValue` for better typing.
  * Useful when a value may be modified by multiple different sources,
  * meaning the value will need to be retrieved from GM every time.
@@ -160,17 +211,27 @@ export function valuesProxy<Values extends string>(
 export function valuesGetProxy<Values extends string>(
   values: ValuesObject<Values>
 ): ValuesPromiseObject<Values> {
+  const grants = checkGrants('getValue')
+
   /** Handle gets to the values object */
   const handler: ProxyHandler<ValuesObject<Values>> = {
     get(target, prop: Values): Promise<GM.Value> {
       return new Promise((resolve, reject) => {
         // Check if the property is a part of the passed values
         if (prop in target) {
-          GM.getValue(prop).then(value => {
-            // Resolve with the value if it's defined
-            if (value !== undefined) resolve(value)
+          // Using GreaseMonkey
+          if (grants) {
+            GM.getValue(prop).then(value => {
+              // Resolve with the value if it's defined
+              if (value !== undefined) resolve(value)
+              else reject()
+            })
+            // Using localStorage
+          } else {
+            const value = localStorage.getItem(prop)
+            if (value !== null) resolve(value)
             else reject()
-          })
+          }
         } else {
           reject()
         }
@@ -187,7 +248,7 @@ export function valuesGetProxy<Values extends string>(
 }
 
 /**
- * Requires the `GM.deleteValue` grant.
+ * Requires the `GM.deleteValue` grant or falls back to localStorage.
  * Deletes a value from a values object.
  * This is only useful if you're using TypeScript or your editor has typing support.
  * If that doesn't describe your use case, then use `GM.deleteValue` instead.
@@ -203,7 +264,11 @@ export function deleteValue<Values extends string, ToDelete extends Values>(
 ): Promise<Omit<ValuesObject<Values>, ToDelete>> {
   return new Promise(async (resolve, reject) => {
     if (toDelete in values) {
-      await GM.deleteValue(toDelete)
+      // Using GreaseMonkey
+      if (checkGrants('deleteValue')) await GM.deleteValue(toDelete)
+      // Using localStorage
+      else localStorage.removeItem(toDelete)
+
       delete values[toDelete]
       resolve(values)
     }
