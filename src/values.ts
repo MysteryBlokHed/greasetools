@@ -114,7 +114,13 @@ export function getValues<Values extends string>(
  * ```
  */
 export async function getAllValues(): Promise<ValuesObject> {
-  const valueNames = await GM.listValues()
+  const valueNames = await (async () => {
+    // Using localStorage
+    if (!checkGrants('getValue', 'listValues')) return Object.keys(localStorage)
+    // Using GreaseMonkey
+    return GM.listValues()
+  })()
+
   const defaults = (() => {
     const emptyDefault: { [key: string]: '' } = {}
     for (const value of valueNames) emptyDefault[value] = ''

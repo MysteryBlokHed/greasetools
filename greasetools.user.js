@@ -191,7 +191,13 @@ exports.getValues = getValues;
  * ```
  */
 async function getAllValues() {
-    const valueNames = await GM.listValues();
+    const valueNames = await (async () => {
+        // Using localStorage
+        if (!checkGrants('getValue', 'listValues'))
+            return Object.keys(localStorage);
+        // Using GreaseMonkey
+        return GM.listValues();
+    })();
     const defaults = (() => {
         const emptyDefault = {};
         for (const value of valueNames)
