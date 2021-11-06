@@ -1,4 +1,4 @@
-# GreaseTools
+# GreaseTools [![Build Badge]](https://gitlab.com/MysteryBlokHed/greasetools/-/pipelines) [![NPM Badge]](https://www.npmjs.com/package/greasetools) [![License Badge]](#license)
 
 Functions and other tools for GreaseMonkey UserScript development.
 
@@ -75,3 +75,7 @@ GreaseTools is licensed under either of
   <http://opensource.org/licenses/MIT>)
 
 at your option.
+
+[build badge]: https://img.shields.io/gitlab/pipeline-status/MysteryBlokHed/greasetools
+[npm badge]: https://img.shields.io/npm/v/greasetools
+[license badge]: https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-green
