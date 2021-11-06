@@ -1,15 +1,16 @@
 image: node:latest
 
 stages:
-  - lint
   - build
+  - deploy
 
 cache:
   paths:
     - node_modules/
     - .yarn-cache/
+    - docs/
 
-.base:
+.only:
   only:
     changes:
       - src/**/*
@@ -19,17 +20,33 @@ cache:
       - .gitlab-ci.yml
       - .prettier*
 
-lint:
-  stage: lint
-  extends: .base
+yarn_install:
+  stage: build
+  extends: .only
   script:
-    - yarn install --cache-folder .yarn-cache
+    - yarn install --frozen-lockfile --check-files --cache-folder .yarn-cache
+
+lint:
+  stage: build
+  needs: ['yarn_install']
+  script:
     - yarn lint --check
 
 test_build:
   stage: build
-  extends: .base
+  needs:
+    - yarn_install
+    - lint
   script:
     - export NODE_OPTIONS=--openssl-legacy-provider
-    - yarn install --cache-folder .yarn-cache
     - yarn build
+
+pages:
+  stage: deploy
+  script:
+    - yarn doc
+  artifacts:
+    paths:
+      - docs/
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH

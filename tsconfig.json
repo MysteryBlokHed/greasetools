@@ -15,5 +15,9 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "lib/",
     "declaration": true
+  },
+  "typedocOptions": {
+    "entryPoints": ["src/index.ts"],
+    "out": "docs"
   }
 }
