@@ -8,7 +8,7 @@ cache:
   paths:
     - node_modules/
     - .yarn-cache/
-    - docs/
+    - public/
 
 .only:
   only:
@@ -46,7 +46,6 @@ pages:
   script:
     - yarn doc
   artifacts:
-    paths:
-      - docs/
+    paths: ['public/']
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH

@@ -1,4 +1,4 @@
 /node_modules/
 
-# built docs (docs are built with gitlab runner)
-/docs/
+# built docs
+/public/
