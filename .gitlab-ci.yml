@@ -28,12 +28,14 @@ yarn_install:
 
 lint:
   stage: build
+  extends: .only
   needs: ['yarn_install']
   script:
     - yarn lint --check
 
 test_build:
   stage: build
+  extends: .only
   needs:
     - yarn_install
     - lint
@@ -43,6 +45,7 @@ test_build:
 
 pages:
   stage: deploy
+  extends: .only
   script:
     - yarn doc
   artifacts:
