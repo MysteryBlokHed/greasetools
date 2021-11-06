@@ -1,8 +1,6 @@
 image: node:latest
 
 stages:
-  - install
-  - lint
   - build
   - deploy
 
@@ -12,7 +10,7 @@ cache:
     - .yarn-cache/
     - docs/
 
-.base:
+.only:
   only:
     changes:
       - src/**/*
@@ -23,28 +21,28 @@ cache:
       - .prettier*
 
 yarn_install:
-  stage: install
+  stage: build
+  extends: .only
   script:
     - yarn install --frozen-lockfile --check-files --cache-folder .yarn-cache
 
 lint:
-  stage: lint
-  extends: .base
+  stage: build
   needs: ['yarn_install']
   script:
     - yarn lint --check
 
 test_build:
   stage: build
-  extends: .base
-  needs: ['yarn_install']
+  needs:
+    - yarn_install
+    - lint
   script:
     - export NODE_OPTIONS=--openssl-legacy-provider
     - yarn build
 
 pages:
   stage: deploy
-  needs: ['yarn_install']
   script:
     - yarn doc
   artifacts:
