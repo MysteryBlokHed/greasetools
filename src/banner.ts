@@ -1,17 +1,19 @@
-export type MetadataKey =
-  | 'description'
-  | 'exclude'
-  | 'grant'
-  | 'icon'
-  | 'include'
-  | 'match'
-  | 'name'
-  | 'namespace'
-  | 'noframes'
-  | 'require'
-  | 'resource'
-  | 'run-at'
-  | 'version'
+export type MetadataObject = {
+  [key in
+    | 'description'
+    | 'exclude'
+    | 'grant'
+    | 'icon'
+    | 'include'
+    | 'match'
+    | 'name'
+    | 'namespace'
+    | 'noframes'
+    | 'require'
+    | 'resource'
+    | 'run-at'
+    | 'version']: string | (string | undefined)[]
+}
 
 /**
  * Generate a UserScript metadata comment from an object.
@@ -24,10 +26,7 @@ export type MetadataKey =
  * @returns A block of comments to be put at the top of a UserScript
  * including all of the properties passed
  */
-export default function genBanner(
-  metaValues: { [key in MetadataKey]?: string | (string | undefined)[] },
-  spacing = 12
-): string {
+export function genBanner(metaValues: MetadataObject, spacing = 12): string {
   let final = '// ==UserScript==\n'
 
   const format = (prop: string, value: string) =>

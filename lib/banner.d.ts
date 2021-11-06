@@ -1,4 +1,6 @@
-export declare type MetadataKey = 'description' | 'exclude' | 'grant' | 'icon' | 'include' | 'match' | 'name' | 'namespace' | 'noframes' | 'require' | 'resource' | 'run-at' | 'version';
+export declare type MetadataObject = {
+    [key in 'description' | 'exclude' | 'grant' | 'icon' | 'include' | 'match' | 'name' | 'namespace' | 'noframes' | 'require' | 'resource' | 'run-at' | 'version']: string | (string | undefined)[];
+};
 /**
  * Generate a UserScript metadata comment from an object.
  * Falsey values will be excluded from the banner, so checking if a value is undefined
@@ -10,6 +12,4 @@ export declare type MetadataKey = 'description' | 'exclude' | 'grant' | 'icon' |
  * @returns A block of comments to be put at the top of a UserScript
  * including all of the properties passed
  */
-export default function genBanner(metaValues: {
-    [key in MetadataKey]?: string | (string | undefined)[];
-}, spacing?: number): string;
+export declare function genBanner(metaValues: MetadataObject, spacing?: number): string;

@@ -19,6 +19,7 @@
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.genBanner = void 0;
 /**
  * Generate a UserScript metadata comment from an object.
  * Falsey values will be excluded from the banner, so checking if a value is undefined
@@ -50,7 +51,7 @@ function genBanner(metaValues, spacing = 12) {
     final += '// ==/UserScript==\n';
     return final;
 }
-exports["default"] = genBanner;
+exports.genBanner = genBanner;
 
 
 /***/ }),
@@ -73,9 +74,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.genBanner = void 0;
-var banner_1 = __webpack_require__(/*! ./banner */ "./lib/banner.js");
-Object.defineProperty(exports, "genBanner", ({ enumerable: true, get: function () { return banner_1.default; } }));
+__exportStar(__webpack_require__(/*! ./banner */ "./lib/banner.js"), exports);
 __exportStar(__webpack_require__(/*! ./values */ "./lib/values.js"), exports);
 
 
