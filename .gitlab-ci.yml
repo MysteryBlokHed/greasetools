@@ -44,7 +44,6 @@ test_build:
 
 pages:
   stage: deploy
-  extends: .base
   needs: ['yarn_install']
   script:
     - yarn doc
