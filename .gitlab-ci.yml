@@ -10,32 +10,32 @@ cache:
     - .yarn-cache/
     - public/
 
-.only:
-  only:
-    changes:
-      - src/**/*
-      - package.json
-      - tsconfig.json
-      - webpack.config.js
-      - .gitlab-ci.yml
-      - .prettier*
+.changes:
+  rules:
+    - changes: &changes
+        - src/**/*
+        - package.json
+        - tsconfig.json
+        - webpack.config.js
+        - .gitlab-ci.yml
+        - .prettier*
 
 yarn_install:
   stage: build
-  extends: .only
+  extends: .changes
   script:
     - yarn install --frozen-lockfile --check-files --cache-folder .yarn-cache
 
 lint:
   stage: build
-  extends: .only
+  extends: .changes
   needs: ['yarn_install']
   script:
     - yarn lint --check
 
 test_build:
   stage: build
-  extends: .only
+  extends: .changes
   needs:
     - yarn_install
     - lint
@@ -45,10 +45,11 @@ test_build:
 
 pages:
   stage: deploy
-  extends: .only
   script:
     - yarn doc
   artifacts:
     paths: ['public/']
   rules:
+    # YAML anchor is used for changes here instead of the extends keyword extends doesn't merge arrays
+    - changes: *changes
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
