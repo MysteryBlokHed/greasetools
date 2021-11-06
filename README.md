@@ -2,6 +2,11 @@
 
 Functions and other tools for GreaseMonkey UserScript development.
 
+## Documentation
+
+If you want online documentation, it can be found at <https://mysteryblokhed.gitlab.io/greasetools>.
+Documentation can be built from a cloned repository by running `yarn doc`.
+
 ## Use
 
 Most functions will require some `@grant`'s to work properly,
