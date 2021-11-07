@@ -65,6 +65,11 @@ const values = valuesProxy(
 )
 ```
 
+#### Typing info
+
+You can still add GreaseTools as a dev dependency if your UserScript includes GreaseTools with `@require`
+and you want typing support.
+
 ## License
 
 GreaseTools is licensed under either of
