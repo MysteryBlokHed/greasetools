@@ -11,10 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Automatically generated documentation
 - localStorage fallback for all values functions
 - Function to generate a UserScript header from an object
 - Function to delete a value with full typing support
 - Function to get an object with all available keys and values
+- Full typing for the `@require`'d version of the library
 - Required `@grant`'s to function docs
 
 ### Changed
