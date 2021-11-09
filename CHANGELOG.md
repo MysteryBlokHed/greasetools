@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Online documentation with TypeDoc
+
+### Changed
+
+- Updated build script to make generated `.d.ts` files support the Webpacked version of the library
+- Tweaked the CI config for GitLab Pages
+
 ## 0.2.0
 
 ### Added
