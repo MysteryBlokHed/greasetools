@@ -24,12 +24,18 @@ function ensureString(values: any[]) {
   }
 }
 
+const prefixKey = (key: string, prefix?: string) =>
+  typeof prefix === 'string' ? `${prefix}.${key}` : key
+
 /**
  * Requires the `GM.getValue` grant or falls back to using localStorage.
  * Retrieves values from GreaseMonkey based on the generic type provided
  *
  * @param defaults The default values if they are undefined.
  * Each option will be set to a key from this if it does not exist
+ * @param id An optional unique identifier for the config. Prefixes all keys with the ID
+ * (eg. `foo` -> `myconfig.foo` for id `myconfig`). This **won't** change the names of the keys
+ * on the returned object
  * @returns A Promise that resolves to an object with all of the values
  *
  * @example
@@ -47,7 +53,8 @@ function ensureString(values: any[]) {
  * ```
  */
 export function getValues<Values extends string>(
-  defaults: ValuesObject<Values>
+  defaults: ValuesObject<Values>,
+  id?: string
 ): Promise<ValuesObject<Values>> {
   return new Promise<ValuesObject<Values>>(resolve => {
     const values = defaults
@@ -73,12 +80,14 @@ export function getValues<Values extends string>(
 
     // Iterate over values
     for (const key of Object.keys(valuesRetrieved) as Values[]) {
+      const prefix = prefixKey(key, id)
+
       // Using localStorage
       if (!grants) {
-        const value = localStorage.getItem(key)
+        const value = localStorage.getItem(prefix)
 
         if (value !== null) values[key] = value
-        else localStorage.setItem(key, values[key] as string)
+        else localStorage.setItem(prefix, values[key] as string)
 
         valuesRetrieved[key] = true
         optionRetrieved()
@@ -86,13 +95,13 @@ export function getValues<Values extends string>(
       }
 
       // Get the option from GreaseMonkey
-      GM.getValue(key).then(async value => {
+      GM.getValue(prefix).then(async value => {
         if (value !== undefined) {
           // If the value is defined, update the values object
           values[key] = value
         } else {
           // If the value is undefined, set it to the default value from the values object
-          await GM.setValue(key, values[key])
+          await GM.setValue(prefix, values[key])
         }
 
         valuesRetrieved[key] = true
@@ -143,6 +152,9 @@ export async function getAllValues(): Promise<ValuesObject> {
  * (`valuesGetProxy`) to get values might be a good idea
  *
  * @param values A values object, such as the one from `getValues`
+ * @param id An optional unique identifier for the config. Prefixes all keys with the ID
+ * (eg. `foo` -> `myconfig.foo` for id `myconfig`). This **won't** change the names of the keys
+ * on the returned object
  * @param callback Called with the Promise returned by `GM.setValue`
  * @returns A Proxy from `values` that updates the GM value on set
  * @example
@@ -159,6 +171,7 @@ export async function getAllValues(): Promise<ValuesObject> {
  */
 export function valuesProxy<Values extends string>(
   values: ValuesObject<Values>,
+  id?: string,
   callback?: (gmSetPromise: Promise<void>) => void
 ): ValuesObject<Values> {
   const grants = checkGrants('setValue')
@@ -166,15 +179,17 @@ export function valuesProxy<Values extends string>(
   /** Handle sets to the values object */
   const handler: ProxyHandler<ValuesObject<Values>> = {
     set(target, prop: Values, value: GM.Value) {
+      const prefix = prefixKey(prop, id)
+
       if (prop in target) {
         // Using GreaseMonkey
         if (grants) {
-          const gmSetPromise = GM.setValue(prop, value)
+          const gmSetPromise = GM.setValue(prefix, value)
           if (callback) callback(gmSetPromise)
           // Using localStorage
         } else {
           ensureString([value])
-          localStorage.setItem(prop, value as string)
+          localStorage.setItem(prefix, value as string)
         }
 
         return Reflect.set(target, prop, value)
@@ -193,6 +208,9 @@ export function valuesProxy<Values extends string>(
  * meaning the value will need to be retrieved from GM every time.
  * This should not be used if values are only being modified by one source
  *
+ * @param id An optional unique identifier for the config. Prefixes all keys with the ID
+ * (eg. `foo` -> `myconfig.foo` for id `myconfig`). This **won't** change the names of the keys
+ * on the returned object
  * @param values A values object, such as the one returned from `getValues`
  * @returns A Proxy using the keys of `values` that wraps `GM.getValue`
  * @example
@@ -209,7 +227,8 @@ export function valuesProxy<Values extends string>(
  * ```
  */
 export function valuesGetProxy<Values extends string>(
-  values: ValuesObject<Values>
+  values: ValuesObject<Values>,
+  id?: string
 ): ValuesPromiseObject<Values> {
   const grants = checkGrants('getValue')
 
@@ -217,18 +236,20 @@ export function valuesGetProxy<Values extends string>(
   const handler: ProxyHandler<ValuesObject<Values>> = {
     get(target, prop: Values): Promise<GM.Value> {
       return new Promise((resolve, reject) => {
+        const prefix = prefixKey(prop, id)
+
         // Check if the property is a part of the passed values
         if (prop in target) {
           // Using GreaseMonkey
           if (grants) {
-            GM.getValue(prop).then(value => {
+            GM.getValue(prefix).then(value => {
               // Resolve with the value if it's defined
               if (value !== undefined) resolve(value)
               else reject()
             })
             // Using localStorage
           } else {
-            const value = localStorage.getItem(prop)
+            const value = localStorage.getItem(prefix)
             if (value !== null) resolve(value)
             else reject()
           }
@@ -251,23 +272,29 @@ export function valuesGetProxy<Values extends string>(
  * Requires the `GM.deleteValue` grant or falls back to localStorage.
  * Deletes a value from a values object.
  * This is only useful if you're using TypeScript or your editor has typing support.
- * If that doesn't describe your use case, then use `GM.deleteValue` instead.
+ * If that doesn't describe your use case, then use `GM.deleteValue` instead
  *
  * @param values A values object, such as the one returned from `getValues`
  * @param toDelete The value to delete
+ * @param id An optional unique identifier for the config. Prefixes all keys with the ID
+ * (eg. `foo` -> `myconfig.foo` for id `myconfig`). This **won't** change the names of the keys
+ * on the returned object
  * @returns A Promise that resolves with a new object without the deleted type,
  * or rejects with nothing if the deletion failed
  */
 export function deleteValue<Values extends string, ToDelete extends Values>(
   values: ValuesObject<Values>,
-  toDelete: ToDelete
+  toDelete: ToDelete,
+  id?: string
 ): Promise<Omit<ValuesObject<Values>, ToDelete>> {
   return new Promise(async (resolve, reject) => {
+    const prefix = prefixKey(toDelete, id)
+
     if (toDelete in values) {
       // Using GreaseMonkey
-      if (checkGrants('deleteValue')) await GM.deleteValue(toDelete)
+      if (checkGrants('deleteValue')) await GM.deleteValue(prefix)
       // Using localStorage
-      else localStorage.removeItem(toDelete)
+      else localStorage.removeItem(prefix)
 
       delete values[toDelete]
       resolve(values)
