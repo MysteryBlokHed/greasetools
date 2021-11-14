@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Online documentation with TypeDoc
+- Optional `id` parameter for values functions
 
 ### Changed
 
