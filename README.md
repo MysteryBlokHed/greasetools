@@ -69,8 +69,8 @@ const values = valuesProxy(
 #### Type declarations
 
 The types included with the npm package still work when the library is `@require`'d.
-Just add the types as a dev dependency for a Node project, or install it globally and include a reference line
-somewhere in your TypeScript source file:
+Just add the types as a dev dependency for a Node project or install it globally.
+With the package installed, include the following reference line somewhere in your TypeScript source file:
 
 ```typescript
 /// <reference types="greasetools" />
