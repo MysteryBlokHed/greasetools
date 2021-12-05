@@ -51,7 +51,8 @@ You can replace `main` with a specific release tag like `v0.1.0` to require a sp
 // @require     https://gitlab.com/MysteryBlokHed/greasetools/-/raw/v0.1.0/greasetools.user.js
 ```
 
-The UserScript file on tags will be built in production mode, while the file on the main branch will be in development mode.
+The UserScript file on tags will be built in production mode (better performance),
+while the file on the main branch will be in development mode (slower, but better for version control).
 
 Functions are available on the global `GreaseTools` object:
 
@@ -65,10 +66,15 @@ const values = valuesProxy(
 )
 ```
 
-#### Typing info
+#### Type declarations
 
-You can still add GreaseTools as a dev dependency if your UserScript includes GreaseTools with `@require`
-and you want typing support.
+The types included with the npm package still work when the library is `@require`'d.
+Just add the types as a dev dependency for a Node project, or install it globally and include a reference line
+somewhere in your TypeScript source file:
+
+```typescript
+/// <reference types="greasetools" />
+```
 
 ## License
 
