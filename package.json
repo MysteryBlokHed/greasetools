@@ -24,8 +24,10 @@
     "doc": "typedoc",
     "release": "yarn build --mode production && git add . && git commit -m \":bookmark: Release <version>\" --edit && yarn build"
   },
+  "dependencies": {
+    "@types/greasemonkey": "^4.0.2"
+  },
   "devDependencies": {
-    "@types/greasemonkey": "^4.0.2",
     "nodemon": "^2.0.14",
     "prettier": "^2.4.1",
     "typedoc": "^0.22.7",
