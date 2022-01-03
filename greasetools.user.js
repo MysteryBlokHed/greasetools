@@ -6,4 +6,454 @@
 // @license     MIT OR Apache-2.0
 // @homepageURL https://gitlab.com/MysteryBlokHed/greasetools#greasetools
 // ==/UserScript==
-(()=>{"use strict";var e={892:(e,t)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.genBanner=void 0,t.genBanner=function(e,t=12){let n="// ==UserScript==\n";const o=(e,n)=>`// @${e}${" ".repeat(t-e.length)}${n}\n`;for(const[t,r]of Object.entries(e))if(r)if("string"==typeof r)n+=o(t,r);else for(const e of r)e&&(n+=o(t,e));return n+="// ==/UserScript==\n",n}},568:function(e,t,n){var o=this&&this.__createBinding||(Object.create?function(e,t,n,o){void 0===o&&(o=n),Object.defineProperty(e,o,{enumerable:!0,get:function(){return t[n]}})}:function(e,t,n,o){void 0===o&&(o=n),e[o]=t[n]}),r=this&&this.__exportStar||function(e,t){for(var n in e)"default"===n||Object.prototype.hasOwnProperty.call(t,n)||o(t,e,n)};Object.defineProperty(t,"__esModule",{value:!0}),r(n(892),t),r(n(636),t)},636:(e,t)=>{function n(...e){if(!GM)return!1;for(const t of e)if(!(t in GM))return!1;return!0}function o(e){for(const t of Object.values(e))if("string"!=typeof t)throw TypeError("Only string is supported for values when localStorage is being used")}Object.defineProperty(t,"__esModule",{value:!0}),t.deleteValue=t.valuesGetProxy=t.valuesProxy=t.getAllValues=t.getValues=void 0;const r=(e,t)=>"string"==typeof t?`${t}.${e}`:e;function s(e,t){return new Promise((s=>{const l=e,a=n("getValue");a||o(Object.values(l));const u=(()=>{let e={};for(const t of Object.keys(l))e[t]=!1;return e})(),c=()=>{Object.values(c).every((e=>e))&&s(l)};for(const e of Object.keys(u)){const n=r(e,t);if(a)GM.getValue(n).then((async t=>{void 0!==t?l[e]=t:await GM.setValue(n,l[e]),u[e]=!0,c()}));else{const t=localStorage.getItem(n);null!==t?l[e]=t:localStorage.setItem(n,l[e]),u[e]=!0,c()}}}))}t.getValues=s,t.getAllValues=async function(){const e=await(async()=>n("getValue","listValues")?GM.listValues():Object.keys(localStorage))();return s((()=>{const t={};for(const n of e)t[n]="";return t})())},t.valuesProxy=function(e,t,s){const l=n("setValue");return new Proxy(e,{set(e,n,a){const u=r(n,t);if(n in e){if(l){const e=GM.setValue(u,a);s&&s(e)}else o([a]),localStorage.setItem(u,a);return Reflect.set(e,n,a)}return!1}})},t.valuesGetProxy=function(e,t){const o=n("getValue");return new Proxy(e,{get:(e,n)=>new Promise(((s,l)=>{const a=r(n,t);if(n in e)if(o)GM.getValue(a).then((e=>{void 0!==e?s(e):l()}));else{const e=localStorage.getItem(a);null!==e?s(e):l()}else l()})),set:()=>!1})},t.deleteValue=function(e,t,o){return new Promise((async(s,l)=>{const a=r(t,o);t in e&&(n("deleteValue")?await GM.deleteValue(a):localStorage.removeItem(a),delete e[t],s(e)),l()}))}}},t={};var n=function n(o){var r=t[o];if(void 0!==r)return r.exports;var s=t[o]={exports:{}};return e[o].call(s.exports,s,s.exports,n),s.exports}(568);window.GreaseTools=n})();
+
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./lib/banner.js":
+/*!***********************!*\
+  !*** ./lib/banner.js ***!
+  \***********************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.genBanner = void 0;
+/**
+ * Generate a UserScript metadata comment from an object.
+ * Falsey values will be excluded from the banner, so checking if a value is undefined
+ * before passing is not necessary.
+ *
+ * @param metaValues Properties to add to metadata
+ * @param spacing The amount of spaces between the `@` and the value, including the prop name.
+ * Should be at least 1 greater than the longest prop name
+ * @returns A block of comments to be put at the top of a UserScript
+ * including all of the properties passed
+ */
+function genBanner(metaValues, spacing = 12) {
+    let final = '// ==UserScript==\n';
+    const format = (prop, value) => `// @${prop}${' '.repeat(spacing - prop.length)}${value}\n`;
+    for (const [key, value] of Object.entries(metaValues)) {
+        if (!value)
+            continue;
+        if (typeof value === 'string') {
+            final += format(key, value);
+        }
+        else {
+            for (const val of value) {
+                if (!val)
+                    continue;
+                final += format(key, val);
+            }
+        }
+    }
+    final += '// ==/UserScript==\n';
+    return final;
+}
+exports.genBanner = genBanner;
+
+
+/***/ }),
+
+/***/ "./lib/index.js":
+/*!**********************!*\
+  !*** ./lib/index.js ***!
+  \**********************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.checkGrants = void 0;
+__exportStar(__webpack_require__(/*! ./banner */ "./lib/banner.js"), exports);
+__exportStar(__webpack_require__(/*! ./xhr */ "./lib/xhr.js"), exports);
+__exportStar(__webpack_require__(/*! ./values */ "./lib/values.js"), exports);
+/** Used by functions to check if grants are present */
+function checkGrants(...grants) {
+    if (!GM)
+        return false;
+    if (grants.some(grant => !(grant in GM)))
+        return false;
+    return true;
+}
+exports.checkGrants = checkGrants;
+
+
+/***/ }),
+
+/***/ "./lib/values.js":
+/*!***********************!*\
+  !*** ./lib/values.js ***!
+  \***********************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.deleteValue = exports.valuesGetProxy = exports.valuesProxy = exports.getAllValues = exports.getValues = void 0;
+const _1 = __webpack_require__(/*! . */ "./lib/index.js");
+/** Ensure that the values passed are all strings for use with `localStorage` */
+function ensureString(values) {
+    for (const value of Object.values(values)) {
+        if (typeof value !== 'string')
+            throw TypeError('Only string is supported for values when localStorage is being used');
+    }
+}
+const prefixKey = (key, prefix) => typeof prefix === 'string' ? `${prefix}.${key}` : key;
+/**
+ * Requires the `GM.getValue` grant or falls back to using localStorage.
+ * Retrieves values from GreaseMonkey based on the generic type provided
+ *
+ * @param defaults The default values if they are undefined.
+ * Each option will be set to a key from this if it does not exist
+ * @param id An optional unique identifier for the config. Prefixes all keys with the ID
+ * (eg. `foo` -> `myconfig.foo` for id `myconfig`). This **won't** change the names of the keys
+ * on the returned object
+ * @returns A Promise that resolves to an object with all of the values
+ *
+ * @example
+ * ```typescript
+ * const values = await getValues({
+ *     somethingEnabled: false,
+ *     someNumber: 42,
+ * })
+ *
+ * console.log(values.somethingEnabled)
+ * console.log(values.someNumber)
+ *
+ * values.someNumber++ // Does NOT modify GM stored value.
+ *                     // Pass the return of this function to valuesProxy for that functionality
+ * ```
+ */
+function getValues(defaults, id) {
+    return new Promise(resolve => {
+        const values = defaults;
+        const grants = (0, _1.checkGrants)('getValue');
+        if (!grants)
+            ensureString(Object.values(values));
+        const valuesRetrieved = (() => {
+            let object = {};
+            for (const option of Object.keys(values)) {
+                object[option] = false;
+            }
+            return object;
+        })();
+        const optionRetrieved = () => {
+            if (Object.values(optionRetrieved).every(v => v)) {
+                resolve(values);
+            }
+        };
+        // Iterate over values
+        for (const key of Object.keys(valuesRetrieved)) {
+            const prefix = prefixKey(key, id);
+            // Using localStorage
+            if (!grants) {
+                const value = localStorage.getItem(prefix);
+                if (value !== null)
+                    values[key] = value;
+                else
+                    localStorage.setItem(prefix, values[key]);
+                valuesRetrieved[key] = true;
+                optionRetrieved();
+                continue;
+            }
+            // Get the option from GreaseMonkey
+            GM.getValue(prefix).then(async (value) => {
+                if (value !== undefined) {
+                    // If the value is defined, update the values object
+                    values[key] = value;
+                }
+                else {
+                    // If the value is undefined, set it to the default value from the values object
+                    await GM.setValue(prefix, values[key]);
+                }
+                valuesRetrieved[key] = true;
+                optionRetrieved();
+            });
+        }
+    });
+}
+exports.getValues = getValues;
+/**
+ * Requires the `GM.getValue` and `GM.listValues` grants or falls back to using localStorage.
+ * Returns a values object containing every saved value for the UserScript
+ *
+ * @returns A Promise that resolves to the defined values or rejects with nothing.
+ * @example
+ * ```typescript
+ * // Logs all key/value pairs from GreaseMonkey
+ * const allValues = await getAllValues()
+ * for (const [key, value] of Object.entries(allValues)) {
+ *   console.log(key, value)
+ * }
+ * ```
+ */
+async function getAllValues() {
+    const valueNames = await (async () => {
+        // Using localStorage
+        if (!(0, _1.checkGrants)('getValue', 'listValues'))
+            return Object.keys(localStorage);
+        // Using GreaseMonkey
+        return GM.listValues();
+    })();
+    const defaults = (() => {
+        const emptyDefault = {};
+        for (const value of valueNames)
+            emptyDefault[value] = '';
+        return emptyDefault;
+    })();
+    return getValues(defaults);
+}
+exports.getAllValues = getAllValues;
+/**
+ * Requires the `GM.setValue` grant or falls back to using localStorage.
+ * Get a Proxy that automatically updates values.
+ * There should generally only be one Proxy per option (eg. one proxy that controls `option1` and `option2`
+ * and a different one that controls `option3` and `option4`).
+ * This is because the returned Proxy doesn't update the value on get, only on set.
+ * If multiple Proxies on the same values are being used to set, then a get Proxy
+ * (`valuesGetProxy`) to get values might be a good idea
+ *
+ * @param values A values object, such as the one from `getValues`
+ * @param id An optional unique identifier for the config. Prefixes all keys with the ID
+ * (eg. `foo` -> `myconfig.foo` for id `myconfig`). This **won't** change the names of the keys
+ * on the returned object
+ * @param callback Called with the Promise returned by `GM.setValue`
+ * @returns A Proxy from `values` that updates the GM value on set
+ * @example
+ * ```typescript
+ * const values = valuesProxy(
+ *   await getValues({
+ *     message: 'Hello, World!',
+ *   })
+ * )
+ *
+ * values.message = 'Hello!' // Runs GM.setValue('message', 'Hello!')
+ * console.log(values.message) // Logs 'Hello!'. Does NOT run GM.getValue
+ * ```
+ */
+function valuesProxy(values, id, callback) {
+    const grants = (0, _1.checkGrants)('setValue');
+    /** Handle sets to the values object */
+    const handler = {
+        set(target, prop, value) {
+            const prefix = prefixKey(prop, id);
+            if (prop in target) {
+                // Using GreaseMonkey
+                if (grants) {
+                    const gmSetPromise = GM.setValue(prefix, value);
+                    if (callback)
+                        callback(gmSetPromise);
+                    // Using localStorage
+                }
+                else {
+                    ensureString([value]);
+                    localStorage.setItem(prefix, value);
+                }
+                return Reflect.set(target, prop, value);
+            }
+            return false;
+        },
+    };
+    return new Proxy(values, handler);
+}
+exports.valuesProxy = valuesProxy;
+/**
+ * Requires the `GM.getValue` grant or falls back to using localStorage.
+ * Get a Proxy that wraps `GM.getValue` for better typing.
+ * Useful when a value may be modified by multiple different sources,
+ * meaning the value will need to be retrieved from GM every time.
+ * This should not be used if values are only being modified by one source
+ *
+ * @param id An optional unique identifier for the config. Prefixes all keys with the ID
+ * (eg. `foo` -> `myconfig.foo` for id `myconfig`). This **won't** change the names of the keys
+ * on the returned object
+ * @param values A values object, such as the one returned from `getValues`
+ * @returns A Proxy using the keys of `values` that wraps `GM.getValue`
+ * @example
+ * ```typescript
+ * const values = valuesProxy(
+ *   await getValues({
+ *     message: 'Hello, World!',
+ *   })
+ * )
+ *
+ * const valuesGet = valuesGetProxy(values)
+ *
+ * console.log(await valuesGet.message) // Logs the result of GM.getValue('message')
+ * ```
+ */
+function valuesGetProxy(values, id) {
+    const grants = (0, _1.checkGrants)('getValue');
+    /** Handle gets to the values object */
+    const handler = {
+        get(target, prop) {
+            return new Promise((resolve, reject) => {
+                const prefix = prefixKey(prop, id);
+                // Check if the property is a part of the passed values
+                if (prop in target) {
+                    // Using GreaseMonkey
+                    if (grants) {
+                        GM.getValue(prefix).then(value => {
+                            // Resolve with the value if it's defined
+                            if (value !== undefined)
+                                resolve(value);
+                            else
+                                reject();
+                        });
+                        // Using localStorage
+                    }
+                    else {
+                        const value = localStorage.getItem(prefix);
+                        if (value !== null)
+                            resolve(value);
+                        else
+                            reject();
+                    }
+                }
+                else {
+                    reject();
+                }
+            });
+        },
+        /** Proxy isn't meant for setting, so do nothing */
+        set() {
+            return false;
+        },
+    };
+    return new Proxy(values, handler);
+}
+exports.valuesGetProxy = valuesGetProxy;
+/**
+ * Requires the `GM.deleteValue` grant or falls back to localStorage.
+ * Deletes a value from a values object.
+ * This is only useful if you're using TypeScript or your editor has typing support.
+ * If that doesn't describe your use case, then use `GM.deleteValue` instead
+ *
+ * @param values A values object, such as the one returned from `getValues`
+ * @param toDelete The value to delete
+ * @param id An optional unique identifier for the config. Prefixes all keys with the ID
+ * (eg. `foo` -> `myconfig.foo` for id `myconfig`). This **won't** change the names of the keys
+ * on the returned object
+ * @returns A Promise that resolves with a new object without the deleted type,
+ * or rejects with nothing if the deletion failed
+ */
+function deleteValue(values, toDelete, id) {
+    return new Promise(async (resolve, reject) => {
+        const prefix = prefixKey(toDelete, id);
+        if (toDelete in values) {
+            // Using GreaseMonkey
+            if ((0, _1.checkGrants)('deleteValue'))
+                await GM.deleteValue(prefix);
+            // Using localStorage
+            else
+                localStorage.removeItem(prefix);
+            delete values[toDelete];
+            resolve(values);
+        }
+        reject();
+    });
+}
+exports.deleteValue = deleteValue;
+
+
+/***/ }),
+
+/***/ "./lib/xhr.js":
+/*!********************!*\
+  !*** ./lib/xhr.js ***!
+  \********************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.xhrPromise = void 0;
+const _1 = __webpack_require__(/*! . */ "./lib/index.js");
+/**
+ * Make a request with GM.xmlHttpRequest using Promises.
+ * Requires the GM.xmlHttpRequest grant
+ *
+ * @param xhrInfo The XHR info
+ * @returns A Promise that resolves with the Greasemonkey Response object
+ * @see https://wiki.greasespot.net/GM.xmlHttpRequest
+ *
+ * @example
+ * ```typescript
+ * // Make a GET request to https://example.com
+ * const example = await xhrPromise({
+ *   method: 'GET',
+ *   url: 'https://example.com',
+ * })
+ * ```
+ */
+function xhrPromise(xhrInfo) {
+    return new Promise((resolve, reject) => {
+        let lastState = XMLHttpRequest.UNSENT;
+        if ((0, _1.checkGrants)('xmlHttpRequest')) {
+            GM.xmlHttpRequest({
+                ...xhrInfo,
+                onreadystatechange: response => {
+                    if (response.readyState === XMLHttpRequest.DONE) {
+                        if (lastState < 3)
+                            reject(new Error('XHR failed'));
+                        else
+                            resolve(response);
+                    }
+                    lastState = response.readyState;
+                },
+            });
+        }
+        else
+            reject(new Error('Missing grant GM.xmlHttpRequest'));
+    });
+}
+exports.xhrPromise = xhrPromise;
+
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __webpack_require__("./lib/index.js");
+/******/ 	window.GreaseTools = __webpack_exports__;
+/******/ 	
+/******/ })()
+;

@@ -1,17 +1,10 @@
+import { checkGrants } from '.'
+
 export type ValuesObject<Values extends string = string> = {
   [option in Values]: GM.Value
 }
 export type ValuesPromiseObject<Values extends string = string> = {
   [option in Values]: Promise<GM.Value>
-}
-
-/** Used by functions to check if grants are present */
-function checkGrants(
-  ...grants: ('setValue' | 'getValue' | 'deleteValue' | 'listValues')[]
-): boolean {
-  if (!GM) return false
-  for (const grant of grants) if (!(grant in GM)) return false
-  return true
 }
 
 /** Ensure that the values passed are all strings for use with `localStorage` */
