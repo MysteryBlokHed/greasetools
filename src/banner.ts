@@ -1,5 +1,5 @@
-export type MetadataObject = {
-  [key in
+export type MetadataObject = Partial<
+  Record<
     | 'description'
     | 'exclude'
     | 'grant'
@@ -12,8 +12,10 @@ export type MetadataObject = {
     | 'require'
     | 'resource'
     | 'run-at'
-    | 'version']: string | (string | undefined)[]
-}
+    | 'version',
+    string | (string | undefined)[] | undefined
+  >
+>
 
 /**
  * Generate a UserScript metadata comment from an object.

@@ -1,6 +1,4 @@
-export declare type MetadataObject = {
-    [key in 'description' | 'exclude' | 'grant' | 'icon' | 'include' | 'match' | 'name' | 'namespace' | 'noframes' | 'require' | 'resource' | 'run-at' | 'version']: string | (string | undefined)[];
-};
+export declare type MetadataObject = Partial<Record<'description' | 'exclude' | 'grant' | 'icon' | 'include' | 'match' | 'name' | 'namespace' | 'noframes' | 'require' | 'resource' | 'run-at' | 'version', string | (string | undefined)[] | undefined>>;
 /**
  * Generate a UserScript metadata comment from an object.
  * Falsey values will be excluded from the banner, so checking if a value is undefined
