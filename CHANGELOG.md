@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added a function to use Promises with XMLHttpRequests via GM.xmlHttpRequest instead of onreadystatechange
+
+### Changed
+
+- Changed how the MetadataObject type was defined
+
 ## 0.3.0
 
 ### Added
