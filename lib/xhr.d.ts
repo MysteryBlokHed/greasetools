@@ -16,4 +16,4 @@
  * })
  * ```
  */
-export declare function xhrPromise<Request extends GM.Request>(xhrInfo: Request): Promise<GM.Response<Request>>;
+export declare function xhrPromise<Request extends GM.Request = GM.Request>(xhrInfo: Request): Promise<GM.Response<Request>>;

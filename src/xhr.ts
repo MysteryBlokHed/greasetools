@@ -17,7 +17,7 @@ import { checkGrants } from '.'
  * })
  * ```
  */
-export function xhrPromise<Request extends GM.Request>(
+export function xhrPromise<Request extends GM.Request = GM.Request>(
   xhrInfo: Request
 ): Promise<GM.Response<Request>> {
   return new Promise((resolve, reject) => {

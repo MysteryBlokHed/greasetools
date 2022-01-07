@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added a function to use Promises with XMLHttpRequests via GM.xmlHttpRequest instead of onreadystatechange
+- Added a function to use Greasemonkey XMLHttpRequests with the Promises API
 
 ### Changed
 
