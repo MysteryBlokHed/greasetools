@@ -6,7 +6,7 @@ import { checkGrants } from '.'
  *
  * @param xhrInfo The XHR info
  * @returns A Promise that resolves with the Greasemonkey Response object
- * @see https://wiki.greasespot.net/GM.xmlHttpRequest
+ * @see {@link https://wiki.greasespot.net/GM.xmlHttpRequest}
  *
  * @example
  * ```typescript
