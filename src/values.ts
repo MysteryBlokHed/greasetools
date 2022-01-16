@@ -17,8 +17,8 @@ function ensureString(values: any[]) {
   }
 }
 
-const prefixKey = (key: string, prefix?: string) =>
-  typeof prefix === 'string' ? `${prefix}.${key}` : key
+const prefixKey = (key: string, prefix: string | undefined) =>
+  prefix ? `${prefix}.${key}` : key
 
 /**
  * Requires the `GM.getValue` grant or falls back to using localStorage.
