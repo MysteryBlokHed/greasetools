@@ -49,57 +49,69 @@ export function getValues<Keys extends string>(
   defaults: ValuesObject<Keys>,
   id?: string
 ): Promise<ValuesObject<Keys>> {
-  return new Promise<ValuesObject<Keys>>(resolve => {
+  return new Promise<ValuesObject<Keys>>((resolve, reject) => {
     const values = defaults
 
     const grants = checkGrants('getValue')
 
     if (!grants) ensureString(Object.values(values))
 
-    const valuesRetrieved = (() => {
-      let object: { [option in Keys]?: boolean } = {}
-      for (const option of Object.keys(values) as Keys[]) {
-        object[option] = false
+    if (grants) {
+      /**
+       * Returns a promise with the value returned from GM.getValue.
+       * If no value exists, sets the value to the provided default
+       * and returns that
+       *
+       * @returns A Promise with the original key and the retrieved value
+       */
+      const getWithDefault = <Key extends Keys>(
+        key: Key,
+        defaultValue: GM.Value,
+        id?: string
+      ): Promise<[key: Key, value: GM.Value]> => {
+        return new Promise((resolve, reject) => {
+          const prefix = prefixKey(key, id)
+          GM.getValue(prefix)
+            .then(value =>
+              value
+                ? resolve([key, value])
+                : GM.setValue(prefix, defaultValue)
+                    .then(() => resolve([key, defaultValue]))
+                    .catch(reason => reject(reason))
+            )
+            .catch(reason => reject(reason))
+        })
       }
 
-      return object as { [option in Keys]: boolean }
-    })()
+      const promises: ReturnType<typeof getWithDefault>[] = []
 
-    const optionRetrieved = () => {
-      if (Object.values(optionRetrieved).every(v => v)) {
-        resolve(values)
-      }
-    }
-
-    // Iterate over values
-    for (const key of Object.keys(valuesRetrieved) as Keys[]) {
-      const prefix = prefixKey(key, id)
-
-      // Using localStorage
-      if (!grants) {
-        const value = localStorage.getItem(prefix)
-
-        if (value !== null) values[key] = value
-        else localStorage.setItem(prefix, values[key] as string)
-
-        valuesRetrieved[key] = true
-        optionRetrieved()
-        continue
+      for (const [key, value] of Object.entries(defaults) as [
+        Keys,
+        GM.Value
+      ][]) {
+        promises.push(getWithDefault(key, value, id))
       }
 
-      // Get the option from GreaseMonkey
-      GM.getValue(prefix).then(async value => {
-        if (value !== undefined) {
-          // If the value is defined, update the values object
-          values[key] = value
-        } else {
-          // If the value is undefined, set it to the default value from the values object
-          await GM.setValue(prefix, values[key])
-        }
-
-        valuesRetrieved[key] = true
-        optionRetrieved()
-      })
+      Promise.all(promises)
+        .then(retrievedValues => {
+          const returnedValues: Partial<ValuesObject<Keys>> = {}
+          for (const [key, value] of retrievedValues) {
+            returnedValues[key] = value
+          }
+          resolve(returnedValues as ValuesObject<Keys>)
+        })
+        .catch(reason => reject(reason))
+    } else {
+      const returnedValues: Partial<ValuesObject<Keys>> = {}
+      for (const [key, defaultValue] of Object.entries(defaults) as [
+        Keys,
+        string
+      ][]) {
+        const value = localStorage.getItem(key)
+        if (value === null) localStorage.setItem(key, defaultValue)
+        returnedValues[key] = value ?? defaultValue
+      }
+      resolve(returnedValues as ValuesObject<Keys>)
     }
   })
 }
