@@ -1,9 +1,9 @@
 /// <reference types="greasemonkey" />
-export declare type ValuesObject<Values extends string = string> = {
-    [option in Values]: GM.Value;
+export declare type ValuesObject<Keys extends string = string> = {
+    [option in Keys]: GM.Value;
 };
-export declare type ValuesPromiseObject<Values extends string = string> = {
-    [option in Values]: Promise<GM.Value>;
+export declare type ValuesPromiseObject<Keys extends string = string> = {
+    [option in Keys]: Promise<GM.Value>;
 };
 /**
  * Requires the `GM.getValue` grant or falls back to using localStorage.
@@ -30,7 +30,7 @@ export declare type ValuesPromiseObject<Values extends string = string> = {
  *                     // Pass the return of this function to valuesProxy for that functionality
  * ```
  */
-export declare function getValues<Values extends string>(defaults: ValuesObject<Values>, id?: string): Promise<ValuesObject<Values>>;
+export declare function getValues<Keys extends string>(defaults: ValuesObject<Keys>, id?: string): Promise<ValuesObject<Keys>>;
 /**
  * Requires the `GM.getValue` and `GM.listValues` grants or falls back to using localStorage.
  * Returns a values object containing every saved value for the UserScript
@@ -73,7 +73,7 @@ export declare function getAllValues(): Promise<ValuesObject>;
  * console.log(values.message) // Logs 'Hello!'. Does NOT run GM.getValue
  * ```
  */
-export declare function valuesProxy<Values extends string>(values: ValuesObject<Values>, id?: string, callback?: (gmSetPromise: Promise<void>) => void): ValuesObject<Values>;
+export declare function valuesProxy<Keys extends string>(values: ValuesObject<Keys>, id?: string, callback?: (gmSetPromise: Promise<void>) => void): ValuesObject<Keys>;
 /**
  * Requires the `GM.getValue` grant or falls back to using localStorage.
  * Get a Proxy that wraps `GM.getValue` for better typing.
@@ -99,7 +99,7 @@ export declare function valuesProxy<Values extends string>(values: ValuesObject<
  * console.log(await valuesGet.message) // Logs the result of GM.getValue('message')
  * ```
  */
-export declare function valuesGetProxy<Values extends string>(values: ValuesObject<Values>, id?: string): ValuesPromiseObject<Values>;
+export declare function valuesGetProxy<Keys extends string>(values: ValuesObject<Keys>, id?: string): ValuesPromiseObject<Keys>;
 /**
  * Requires the `GM.deleteValue` grant or falls back to localStorage.
  * Deletes a value from a values object.
@@ -114,4 +114,4 @@ export declare function valuesGetProxy<Values extends string>(values: ValuesObje
  * @returns A Promise that resolves with a new object without the deleted type,
  * or rejects with nothing if the deletion failed
  */
-export declare function deleteValue<Values extends string, ToDelete extends Values>(values: ValuesObject<Values>, toDelete: ToDelete, id?: string): Promise<Omit<ValuesObject<Values>, ToDelete>>;
+export declare function deleteValue<Keys extends string, ToDelete extends Keys>(values: ValuesObject<Keys>, toDelete: ToDelete, id?: string): Promise<Omit<ValuesObject<Keys>, ToDelete>>;

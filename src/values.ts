@@ -1,10 +1,10 @@
 import { checkGrants } from '.'
 
-export type ValuesObject<Values extends string = string> = {
-  [option in Values]: GM.Value
+export type ValuesObject<Keys extends string = string> = {
+  [option in Keys]: GM.Value
 }
-export type ValuesPromiseObject<Values extends string = string> = {
-  [option in Values]: Promise<GM.Value>
+export type ValuesPromiseObject<Keys extends string = string> = {
+  [option in Keys]: Promise<GM.Value>
 }
 
 /** Ensure that the values passed are all strings for use with `localStorage` */
@@ -45,11 +45,11 @@ const prefixKey = (key: string, prefix: string | undefined) =>
  *                     // Pass the return of this function to valuesProxy for that functionality
  * ```
  */
-export function getValues<Values extends string>(
-  defaults: ValuesObject<Values>,
+export function getValues<Keys extends string>(
+  defaults: ValuesObject<Keys>,
   id?: string
-): Promise<ValuesObject<Values>> {
-  return new Promise<ValuesObject<Values>>(resolve => {
+): Promise<ValuesObject<Keys>> {
+  return new Promise<ValuesObject<Keys>>(resolve => {
     const values = defaults
 
     const grants = checkGrants('getValue')
@@ -57,12 +57,12 @@ export function getValues<Values extends string>(
     if (!grants) ensureString(Object.values(values))
 
     const valuesRetrieved = (() => {
-      let object: { [option in Values]?: boolean } = {}
-      for (const option of Object.keys(values) as Values[]) {
+      let object: { [option in Keys]?: boolean } = {}
+      for (const option of Object.keys(values) as Keys[]) {
         object[option] = false
       }
 
-      return object as { [option in Values]: boolean }
+      return object as { [option in Keys]: boolean }
     })()
 
     const optionRetrieved = () => {
@@ -72,7 +72,7 @@ export function getValues<Values extends string>(
     }
 
     // Iterate over values
-    for (const key of Object.keys(valuesRetrieved) as Values[]) {
+    for (const key of Object.keys(valuesRetrieved) as Keys[]) {
       const prefix = prefixKey(key, id)
 
       // Using localStorage
@@ -162,16 +162,16 @@ export async function getAllValues(): Promise<ValuesObject> {
  * console.log(values.message) // Logs 'Hello!'. Does NOT run GM.getValue
  * ```
  */
-export function valuesProxy<Values extends string>(
-  values: ValuesObject<Values>,
+export function valuesProxy<Keys extends string>(
+  values: ValuesObject<Keys>,
   id?: string,
   callback?: (gmSetPromise: Promise<void>) => void
-): ValuesObject<Values> {
+): ValuesObject<Keys> {
   const grants = checkGrants('setValue')
 
   /** Handle sets to the values object */
-  const handler: ProxyHandler<ValuesObject<Values>> = {
-    set(target, prop: Values, value: GM.Value) {
+  const handler: ProxyHandler<ValuesObject<Keys>> = {
+    set(target, prop: Keys, value: GM.Value) {
       const prefix = prefixKey(prop, id)
 
       if (prop in target) {
@@ -219,15 +219,15 @@ export function valuesProxy<Values extends string>(
  * console.log(await valuesGet.message) // Logs the result of GM.getValue('message')
  * ```
  */
-export function valuesGetProxy<Values extends string>(
-  values: ValuesObject<Values>,
+export function valuesGetProxy<Keys extends string>(
+  values: ValuesObject<Keys>,
   id?: string
-): ValuesPromiseObject<Values> {
+): ValuesPromiseObject<Keys> {
   const grants = checkGrants('getValue')
 
   /** Handle gets to the values object */
-  const handler: ProxyHandler<ValuesObject<Values>> = {
-    get(target, prop: Values): Promise<GM.Value> {
+  const handler: ProxyHandler<ValuesObject<Keys>> = {
+    get(target, prop: Keys): Promise<GM.Value> {
       return new Promise((resolve, reject) => {
         const prefix = prefixKey(prop, id)
 
@@ -258,7 +258,7 @@ export function valuesGetProxy<Values extends string>(
     },
   }
 
-  return new Proxy(values, handler) as unknown as ValuesPromiseObject<Values>
+  return new Proxy(values, handler) as unknown as ValuesPromiseObject<Keys>
 }
 
 /**
@@ -275,11 +275,11 @@ export function valuesGetProxy<Values extends string>(
  * @returns A Promise that resolves with a new object without the deleted type,
  * or rejects with nothing if the deletion failed
  */
-export function deleteValue<Values extends string, ToDelete extends Values>(
-  values: ValuesObject<Values>,
+export function deleteValue<Keys extends string, ToDelete extends Keys>(
+  values: ValuesObject<Keys>,
   toDelete: ToDelete,
   id?: string
-): Promise<Omit<ValuesObject<Values>, ToDelete>> {
+): Promise<Omit<ValuesObject<Keys>, ToDelete>> {
   return new Promise(async (resolve, reject) => {
     const prefix = prefixKey(toDelete, id)
 
