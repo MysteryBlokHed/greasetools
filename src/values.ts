@@ -1,11 +1,10 @@
 import { checkGrants } from '.'
 
-export type ValuesObject<Keys extends string = string> = {
-  [option in Keys]: GM.Value
-}
-export type ValuesPromiseObject<Keys extends string = string> = {
-  [option in Keys]: Promise<GM.Value>
-}
+export type ValuesObject<Keys extends string = string> = Record<Keys, GM.Value>
+export type ValuesPromiseObject<Keys extends string = string> = Record<
+  Keys,
+  Promise<GM.Value>
+>
 
 /** Ensure that the values passed are all strings for use with `localStorage` */
 function ensureString(values: any[]) {

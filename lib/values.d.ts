@@ -1,10 +1,6 @@
 /// <reference types="greasemonkey" />
-export declare type ValuesObject<Keys extends string = string> = {
-    [option in Keys]: GM.Value;
-};
-export declare type ValuesPromiseObject<Keys extends string = string> = {
-    [option in Keys]: Promise<GM.Value>;
-};
+export declare type ValuesObject<Keys extends string = string> = Record<Keys, GM.Value>;
+export declare type ValuesPromiseObject<Keys extends string = string> = Record<Keys, Promise<GM.Value>>;
 /**
  * Requires the `GM.getValue` grant or falls back to using localStorage.
  * Retrieves values from GreaseMonkey based on the generic type provided
