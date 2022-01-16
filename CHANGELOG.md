@@ -13,7 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Changed the getValues function to use Promise.all
+- Updated docs on some functions
 - Changed how the MetadataObject type was defined
+- Changed how the ValuesObject and ValuesProxyObject types were defined
 
 ## 0.3.0
 
