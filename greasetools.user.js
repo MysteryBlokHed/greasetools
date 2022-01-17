@@ -153,20 +153,17 @@ function getValues(defaults, id, setDefaults = false) {
              * @returns A Promise with the original key and the retrieved value
              */
             const getWithDefault = (key, defaultValue, id) => {
-                return new Promise((resolve, reject) => {
+                return new Promise(async (resolve) => {
                     const prefix = prefixKey(key, id);
-                    GM.getValue(prefix)
-                        .then(value => value
-                        ? // Resolve if the value was found
-                            resolve([key, value])
-                        : setDefaults
-                            ? // Set the default value if setDefaults is true
-                                GM.setValue(prefix, defaultValue)
-                                    .then(() => resolve([key, defaultValue]))
-                                    .catch(reason => reject(reason))
-                            : // Resolve without setting the default value if setDefaults is false
-                                resolve([key, defaultValue]))
-                        .catch(reason => reject(reason));
+                    const value = await GM.getValue(prefix);
+                    // Resolve with the value if found
+                    if (value)
+                        return resolve([key, value]);
+                    // Set the value if setDefaults argument is passed
+                    if (setDefaults)
+                        await GM.setValue(key, defaultValue);
+                    // Resolve with the default value
+                    return resolve([key, defaultValue]);
                 });
             };
             const promises = [];
@@ -189,7 +186,7 @@ function getValues(defaults, id, setDefaults = false) {
                 const value = localStorage.getItem(key);
                 if (value === null)
                     localStorage.setItem(key, defaultValue);
-                returnedValues[key] = value ?? defaultValue;
+                returnedValues[key] = value !== null && value !== void 0 ? value : defaultValue;
             }
             resolve(returnedValues);
         }
@@ -412,9 +409,7 @@ function xhrPromise(xhrInfo) {
     return new Promise((resolve, reject) => {
         let lastState = XMLHttpRequest.UNSENT;
         if ((0, _1.checkGrants)('xmlHttpRequest')) {
-            GM.xmlHttpRequest({
-                ...xhrInfo,
-                onreadystatechange: response => {
+            GM.xmlHttpRequest(Object.assign(Object.assign({}, xhrInfo), { onreadystatechange: response => {
                     if (response.readyState === XMLHttpRequest.DONE) {
                         if (lastState < 3)
                             reject(new Error('XHR failed'));
@@ -422,8 +417,7 @@ function xhrPromise(xhrInfo) {
                             resolve(response);
                     }
                     lastState = response.readyState;
-                },
-            });
+                } }));
         }
         else
             reject(new Error('Missing grant GM.xmlHttpRequest'));

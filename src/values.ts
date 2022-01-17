@@ -73,22 +73,18 @@ export function getValues<Keys extends string>(
         defaultValue: GM.Value,
         id?: string
       ): Promise<[key: Key, value: GM.Value]> => {
-        return new Promise((resolve, reject) => {
+        return new Promise(async resolve => {
           const prefix = prefixKey(key, id)
-          GM.getValue(prefix)
-            .then(value =>
-              value
-                ? // Resolve if the value was found
-                  resolve([key, value])
-                : setDefaults
-                ? // Set the default value if setDefaults is true
-                  GM.setValue(prefix, defaultValue)
-                    .then(() => resolve([key, defaultValue]))
-                    .catch(reason => reject(reason))
-                : // Resolve without setting the default value if setDefaults is false
-                  resolve([key, defaultValue])
-            )
-            .catch(reason => reject(reason))
+
+          const value = await GM.getValue(prefix)
+          // Resolve with the value if found
+          if (value) return resolve([key, value])
+
+          // Set the value if setDefaults argument is passed
+          if (setDefaults) await GM.setValue(key, defaultValue)
+
+          // Resolve with the default value
+          return resolve([key, defaultValue])
         })
       }
 

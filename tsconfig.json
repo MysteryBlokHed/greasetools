@@ -3,7 +3,7 @@
   "include": ["src/**/*"],
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2021",
+    "target": "es2017",
     "lib": ["dom", "es2021"],
     "noImplicitAny": true,
     "strict": true,
