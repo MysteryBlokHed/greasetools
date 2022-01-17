@@ -113,7 +113,8 @@ export function getValues<Keys extends string>(
         string
       ][]) {
         const value = localStorage.getItem(key)
-        if (value === null) localStorage.setItem(key, defaultValue)
+        if (value === null && setDefaults)
+          localStorage.setItem(key, defaultValue)
         returnedValues[key] = value ?? defaultValue
       }
       resolve(returnedValues as ValuesObject<Keys>)

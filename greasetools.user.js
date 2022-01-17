@@ -184,7 +184,7 @@ function getValues(defaults, id, setDefaults = false) {
             const returnedValues = {};
             for (const [key, defaultValue] of Object.entries(defaults)) {
                 const value = localStorage.getItem(key);
-                if (value === null)
+                if (value === null && setDefaults)
                     localStorage.setItem(key, defaultValue);
                 returnedValues[key] = value !== null && value !== void 0 ? value : defaultValue;
             }
