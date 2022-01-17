@@ -11,7 +11,7 @@ function ensureString(values: any[]) {
   for (const value of Object.values(values)) {
     if (typeof value !== 'string')
       throw TypeError(
-        'Only string is supported for values when localStorage is being used'
+        'Only strings are supported for values when localStorage is being used'
       )
   }
 }
@@ -28,6 +28,8 @@ const prefixKey = (key: string, prefix: string | undefined) =>
  * @param id An optional unique identifier for the config. Prefixes all keys with the ID
  * (eg. `foo` -> `myconfig.foo` for id `myconfig`). This **won't** change the names of the keys
  * on the returned object
+ * @param setDefaults Whether or not to store the default value from the defaults argument
+ * with `GM.setValue` if it doesn't exist. Requires the `GM.setValue` grant
  * @returns A Promise that resolves to an object with all of the values
  *
  * @example
@@ -46,12 +48,15 @@ const prefixKey = (key: string, prefix: string | undefined) =>
  */
 export function getValues<Keys extends string>(
   defaults: ValuesObject<Keys>,
-  id?: string
+  id?: string,
+  setDefaults = false
 ): Promise<ValuesObject<Keys>> {
   return new Promise<ValuesObject<Keys>>((resolve, reject) => {
     const values = defaults
 
-    const grants = checkGrants('getValue')
+    const grants = setDefaults
+      ? checkGrants('getValue')
+      : checkGrants('getValue', 'setValue')
 
     if (!grants) ensureString(Object.values(values))
 
@@ -73,10 +78,15 @@ export function getValues<Keys extends string>(
           GM.getValue(prefix)
             .then(value =>
               value
-                ? resolve([key, value])
-                : GM.setValue(prefix, defaultValue)
+                ? // Resolve if the value was found
+                  resolve([key, value])
+                : setDefaults
+                ? // Set the default value if setDefaults is true
+                  GM.setValue(prefix, defaultValue)
                     .then(() => resolve([key, defaultValue]))
                     .catch(reason => reject(reason))
+                : // Resolve without setting the default value if setDefaults is false
+                  resolve([key, defaultValue])
             )
             .catch(reason => reject(reason))
         })

@@ -105,7 +105,7 @@ const _1 = __webpack_require__(/*! . */ "./lib/index.js");
 function ensureString(values) {
     for (const value of Object.values(values)) {
         if (typeof value !== 'string')
-            throw TypeError('Only string is supported for values when localStorage is being used');
+            throw TypeError('Only strings are supported for values when localStorage is being used');
     }
 }
 const prefixKey = (key, prefix) => prefix ? `${prefix}.${key}` : key;
@@ -118,6 +118,8 @@ const prefixKey = (key, prefix) => prefix ? `${prefix}.${key}` : key;
  * @param id An optional unique identifier for the config. Prefixes all keys with the ID
  * (eg. `foo` -> `myconfig.foo` for id `myconfig`). This **won't** change the names of the keys
  * on the returned object
+ * @param setDefaults Whether or not to store the default value from the defaults argument
+ * with `GM.setValue` if it doesn't exist. Requires the `GM.setValue` grant
  * @returns A Promise that resolves to an object with all of the values
  *
  * @example
@@ -134,10 +136,12 @@ const prefixKey = (key, prefix) => prefix ? `${prefix}.${key}` : key;
  *                     // Pass the return of this function to valuesProxy for that functionality
  * ```
  */
-function getValues(defaults, id) {
+function getValues(defaults, id, setDefaults = false) {
     return new Promise((resolve, reject) => {
         const values = defaults;
-        const grants = (0, _1.checkGrants)('getValue');
+        const grants = setDefaults
+            ? (0, _1.checkGrants)('getValue')
+            : (0, _1.checkGrants)('getValue', 'setValue');
         if (!grants)
             ensureString(Object.values(values));
         if (grants) {
@@ -153,10 +157,15 @@ function getValues(defaults, id) {
                     const prefix = prefixKey(key, id);
                     GM.getValue(prefix)
                         .then(value => value
-                        ? resolve([key, value])
-                        : GM.setValue(prefix, defaultValue)
-                            .then(() => resolve([key, defaultValue]))
-                            .catch(reason => reject(reason)))
+                        ? // Resolve if the value was found
+                            resolve([key, value])
+                        : setDefaults
+                            ? // Set the default value if setDefaults is true
+                                GM.setValue(prefix, defaultValue)
+                                    .then(() => resolve([key, defaultValue]))
+                                    .catch(reason => reject(reason))
+                            : // Resolve without setting the default value if setDefaults is false
+                                resolve([key, defaultValue]))
                         .catch(reason => reject(reason));
                 });
             };

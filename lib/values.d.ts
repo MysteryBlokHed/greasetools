@@ -10,6 +10,8 @@ export declare type ValuesPromiseObject<Keys extends string = string> = Record<K
  * @param id An optional unique identifier for the config. Prefixes all keys with the ID
  * (eg. `foo` -> `myconfig.foo` for id `myconfig`). This **won't** change the names of the keys
  * on the returned object
+ * @param setDefaults Whether or not to store the default value from the defaults argument
+ * with `GM.setValue` if it doesn't exist. Requires the `GM.setValue` grant
  * @returns A Promise that resolves to an object with all of the values
  *
  * @example
@@ -26,7 +28,7 @@ export declare type ValuesPromiseObject<Keys extends string = string> = Record<K
  *                     // Pass the return of this function to valuesProxy for that functionality
  * ```
  */
-export declare function getValues<Keys extends string>(defaults: ValuesObject<Keys>, id?: string): Promise<ValuesObject<Keys>>;
+export declare function getValues<Keys extends string>(defaults: ValuesObject<Keys>, id?: string, setDefaults?: boolean): Promise<ValuesObject<Keys>>;
 /**
  * Requires the `GM.getValue` and `GM.listValues` grants or falls back to using localStorage.
  * Returns a values object containing every saved value for the UserScript
