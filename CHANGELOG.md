@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added a function to use Greasemonkey XMLHttpRequests with the Promises API
+- Added an argument to getValues to choose whether to store the default values before they're modified
 
 ### Changed
 
