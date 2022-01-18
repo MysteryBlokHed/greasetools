@@ -18,7 +18,7 @@ import { checkGrants } from '.'
  * ```
  */
 export function xhrPromise<Request extends GM.Request = GM.Request>(
-  xhrInfo: Request
+  xhrInfo: Request,
 ): Promise<GM.Response<Request>> {
   return new Promise((resolve, reject) => {
     let lastState = XMLHttpRequest.UNSENT

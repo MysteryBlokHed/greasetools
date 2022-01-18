@@ -33,7 +33,7 @@ import { valuesProxy, getValues } from 'greasetools'
 const values = valuesProxy(
   await getValues({
     hello: 'World!',
-  })
+  }),
 )
 ```
 
@@ -62,7 +62,7 @@ const { valuesProxy, getValues } = GreaseTools
 const values = valuesProxy(
   await getValues({
     hello: 'World!',
-  })
+  }),
 )
 ```
 

@@ -11,7 +11,7 @@ function ensureString(values: any[]) {
   for (const value of Object.values(values)) {
     if (typeof value !== 'string')
       throw TypeError(
-        'Only strings are supported for values when localStorage is being used'
+        'Only strings are supported for values when localStorage is being used',
       )
   }
 }
@@ -49,7 +49,7 @@ const prefixKey = (key: string, prefix: string | undefined) =>
 export function getValues<Keys extends string>(
   defaults: ValuesObject<Keys>,
   id?: string,
-  setDefaults = false
+  setDefaults = false,
 ): Promise<ValuesObject<Keys>> {
   return new Promise<ValuesObject<Keys>>((resolve, reject) => {
     const values = defaults
@@ -71,7 +71,7 @@ export function getValues<Keys extends string>(
       const getWithDefault = <Key extends Keys>(
         key: Key,
         defaultValue: GM.Value,
-        id?: string
+        id?: string,
       ): Promise<[key: Key, value: GM.Value]> => {
         return new Promise(async resolve => {
           const prefix = prefixKey(key, id)
@@ -92,7 +92,7 @@ export function getValues<Keys extends string>(
 
       for (const [key, value] of Object.entries(defaults) as [
         Keys,
-        GM.Value
+        GM.Value,
       ][]) {
         promises.push(getWithDefault(key, value, id))
       }
@@ -110,7 +110,7 @@ export function getValues<Keys extends string>(
       const returnedValues: Partial<ValuesObject<Keys>> = {}
       for (const [key, defaultValue] of Object.entries(defaults) as [
         Keys,
-        string
+        string,
       ][]) {
         const value = localStorage.getItem(key)
         if (value === null && setDefaults)
@@ -183,7 +183,7 @@ export async function getAllValues(): Promise<ValuesObject> {
 export function valuesProxy<Keys extends string>(
   values: ValuesObject<Keys>,
   id?: string,
-  callback?: (gmSetPromise: Promise<void>) => void
+  callback?: (gmSetPromise: Promise<void>) => void,
 ): ValuesObject<Keys> {
   const grants = checkGrants('setValue')
 
@@ -239,7 +239,7 @@ export function valuesProxy<Keys extends string>(
  */
 export function valuesGetProxy<Keys extends string>(
   values: ValuesObject<Keys>,
-  id?: string
+  id?: string,
 ): ValuesPromiseObject<Keys> {
   const grants = checkGrants('getValue')
 
@@ -296,7 +296,7 @@ export function valuesGetProxy<Keys extends string>(
 export function deleteValue<Keys extends string, ToDelete extends Keys>(
   values: ValuesObject<Keys>,
   toDelete: ToDelete,
-  id?: string
+  id?: string,
 ): Promise<Omit<ValuesObject<Keys>, ToDelete>> {
   return new Promise(async (resolve, reject) => {
     const prefix = prefixKey(toDelete, id)
