@@ -13,7 +13,7 @@ export type MetadataObject = Partial<
     | 'resource'
     | 'run-at'
     | 'version',
-    string | (string | undefined)[] | undefined
+    string | readonly (string | undefined)[] | undefined
   >
 >
 

@@ -4,7 +4,7 @@ export * from './values'
 
 /** Used by functions to check if grants are present */
 export function checkGrants(
-  ...grants: (
+  ...grants: readonly (
     | 'setValue'
     | 'getValue'
     | 'deleteValue'

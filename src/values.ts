@@ -7,7 +7,7 @@ export type ValuesPromiseObject<Keys extends string = string> = Record<
 >
 
 /** Ensure that the values passed are all strings for use with `localStorage` */
-function ensureString(values: any[]) {
+function ensureString(values: readonly any[]) {
   for (const value of Object.values(values)) {
     if (typeof value !== 'string')
       throw TypeError(
