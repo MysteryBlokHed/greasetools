@@ -51,9 +51,6 @@ You can replace `main` with a specific release tag like `v0.1.0` to require a sp
 // @require     https://gitlab.com/MysteryBlokHed/greasetools/-/raw/v0.1.0/greasetools.user.js
 ```
 
-The UserScript file on tags will be built in production mode (better performance),
-while the file on the main branch will be in development mode (slower, but better for version control).
-
 Functions are available on the global `GreaseTools` object:
 
 ```javascript

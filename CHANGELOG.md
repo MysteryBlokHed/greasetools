@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added optional `start` and `end` parameters to genBanner to modify how the UserScript header is generated
+
+### Changed
+
+- Stopped minifying release scripts since it's not allowed on some UserScript sites
+
 ## 0.4.0
 
 ### Added
