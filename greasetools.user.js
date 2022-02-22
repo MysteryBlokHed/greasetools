@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        greasetools
 // @description Functions and other tools for GreaseMonkey UserScript development.
-// @version     0.4.0
+// @version     0.5.0
 // @author      Adam Thompson-Sharpe
 // @license     MIT OR Apache-2.0
 // @homepageURL https://gitlab.com/MysteryBlokHed/greasetools#greasetools
