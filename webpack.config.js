@@ -15,7 +15,7 @@ const banner = genBanner({
 })
 
 /** The name of the generated UserScript file, excluding the .user.js suffix */
-const outFile = `${package.name}`
+const outFile = package.name
 
 module.exports = (_, argv) => ({
   entry: path.resolve(__dirname, 'lib/index.js'),
