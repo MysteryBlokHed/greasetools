@@ -51,6 +51,13 @@ You can replace `main` with a specific release tag like `v0.1.0` to require a sp
 // @require     https://gitlab.com/MysteryBlokHed/greasetools/-/raw/v0.1.0/greasetools.user.js
 ```
 
+Each release tag also has a minified version of the script available,
+which can be used by changing the file extension to `.min.user.js`:
+
+```javascript
+// @require     https://gitlab.com/MysteryBlokHed/greasetools/-/raw/v0.1.0/greasetools.min.user.js
+```
+
 Functions are available on the global `GreaseTools` object:
 
 ```javascript

@@ -14,13 +14,15 @@ const banner = genBanner({
   homepageURL: package.homepage,
 })
 
-/** The name of the generated UserScript file */
-const outFile = `${package.name}.user.js`
+/** The name of the generated UserScript file, excluding the .user.js suffix */
+const outFile = `${package.name}`
 
-module.exports = {
+module.exports = (_, argv) => ({
   entry: path.resolve(__dirname, 'lib/index.js'),
   output: {
-    filename: outFile,
+    filename: `${outFile}${
+      argv?.mode === 'production' ? '.min.user.js' : '.user.js'
+    }`,
     path: __dirname,
     library: 'GreaseTools',
     libraryTarget: 'window',
@@ -52,4 +54,4 @@ module.exports = {
   },
   mode: 'development',
   devtool: false,
-}
+})

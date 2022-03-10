@@ -22,7 +22,7 @@
     "dev": "nodemon -w src -e ts --exec \"yarn build || exit 1\"",
     "lint": "prettier \"**/*.{js,ts,json,md,yml}\"",
     "doc": "typedoc",
-    "release": "yarn build && git add . && git commit -m \":bookmark: Release <version>\" --edit"
+    "release": "yarn build && yarn build --mode production && git add . && git commit -m \":bookmark: Release <version>\" --edit && git rm ./*.min.user.js"
   },
   "dependencies": {
     "@types/greasemonkey": "^4.0.2"
